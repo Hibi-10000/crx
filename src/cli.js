@@ -15,6 +15,18 @@ program.version(pkg.version);
 // coming soon
 // .option("-x, --xml", "output autoupdate xml instead of extension ")
 
+/** @typedef { import("./index") } BrowserExtension */
+
+/**
+ * @typedef {Object} InterfaceCli
+ * @property {number=} crxVersion
+ * @property {boolean} force
+ * @property {string} privateKey
+ * @property {string=} output
+ * @property {string=} zipOutput
+ * @property {number=} maxBuffer
+ */
+
 program
   .command("keygen [directory]")
   .option("--force", "overwrite the private key if it exists")
@@ -48,13 +60,14 @@ program
   )
   .action(pack);
 
+/** @type {InterfaceCli} */
 program.parse(process.argv);
 
 /**
  * Generate a new key file
  * @param {String} keyPath path of the key file to create
- * @param {Object} opts
- * @returns {Promise}
+ * @param {InterfaceCli} opts
+ * @returns {Promise<void>}
  */
 function generateKeyFile(keyPath, opts) {
   const { privateKey } = crypto.generateKeyPairSync("rsa", {
@@ -72,56 +85,66 @@ function generateKeyFile(keyPath, opts) {
   return fs.writeFileSync(keyPath, privateKey);
 }
 
-function keygen(dir, options) {
+/**
+ * Generates a Private Key
+ *
+ * @param {string} dir
+ * @param {InterfaceCli} opts
+ */
+function keygen(dir, opts) {
   dir = dir ? path.resolve(cwd, dir) : cwd;
 
   const keyPath = path.join(dir, "key.pem");
 
   try {
     fs.accessSync(keyPath);
-    if (!options.force) {
+    if (!opts.force) {
       throw new Error("key.pem already exists in the given location.");
     }
   }
   catch (_err) {
-    generateKeyFile(keyPath, options);
+    generateKeyFile(keyPath, opts);
   }
 }
 
-function pack(dir, options) {
+/**
+ * @param {string} dir
+ * @param {InterfaceCli} opts
+ */
+function pack(dir, opts) {
   const input = dir ? path.resolve(cwd, dir) : cwd;
-  const keyPath = options.privateKey
-    ? path.resolve(cwd, options.privateKey)
+  const keyPath = opts.privateKey
+    ? path.resolve(cwd, opts.privateKey)
     : path.join(input, "..", "key.pem");
   let output;
 
-  if (options.output) {
-    if (path.extname(options.output) !== ".crx") {
+  if (opts.output) {
+    if (path.extname(opts.output) !== ".crx") {
       throw new Error(
-        `-o file is expected to have a \`.crx\` suffix: [${options.output}] was given.`,
+        `-o file is expected to have a \`.crx\` suffix: [${opts.output}] was given.`,
       );
     }
   }
 
-  if (options.zipOutput) {
-    if (path.extname(options.zipOutput) !== ".zip") {
+  if (opts.zipOutput) {
+    if (path.extname(opts.zipOutput) !== ".zip") {
       throw new Error(
-        `--zip-output file is expected to have a \`.zip\` suffix: [${options.zipOutput}] was given.`,
+        `--zip-output file is expected to have a \`.zip\` suffix: [${opts.zipOutput}] was given.`,
       );
     }
   }
 
   const crx = new ChromeExtension({
     rootDirectory: input,
-    maxBuffer: options.maxBuffer,
-    version: options.crxVersion || 3,
+    maxBuffer: opts.maxBuffer,
+    version: opts.crxVersion || 3,
   });
 
   fs.promises.readFile(keyPath)
     .then(null, async (err) => {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
-        await generateKeyFile(keyPath, options);
+        await generateKeyFile(keyPath, opts);
         process.stderr.write(`Created new private key at: ${keyPath}.\n`);
         return fs.readFileSync(keyPath);
       }
@@ -137,8 +160,8 @@ function pack(dir, options) {
         .load()
         .then(() => crx.loadContents())
         .then((fileBuffer) => {
-          if (options.zipOutput) {
-            const outFile = path.resolve(cwd, options.zipOutput);
+          if (opts.zipOutput) {
+            const outFile = path.resolve(cwd, opts.zipOutput);
 
             fs.createWriteStream(outFile).end(fileBuffer);
           }
@@ -147,11 +170,11 @@ function pack(dir, options) {
           }
         })
         .then((crxBuffer) => {
-          if (options.zipOutput) {
+          if (opts.zipOutput) {
             return;
           }
-          else if (options.output) {
-            output = options.output;
+          else if (opts.output) {
+            output = opts.output;
           }
           else {
             output = `${path.basename(cwd)}.crx`;
