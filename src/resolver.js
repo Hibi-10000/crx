@@ -25,7 +25,7 @@ module.exports = function resolve(pathOrFiles) {
 
       if (!manifestFile) {
         return reject(
-          new Error("Unable to locate a manifest file in your list of files.")
+          new Error("Unable to locate a manifest file in your list of files."),
         );
       }
 
@@ -48,8 +48,8 @@ module.exports = function resolve(pathOrFiles) {
     else {
       reject(
         new Error(
-          "load path is none of a folder location nor a list of files to pack"
-        )
+          "load path is none of a folder location nor a list of files to pack",
+        ),
       );
     }
   });

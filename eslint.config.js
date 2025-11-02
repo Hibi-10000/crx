@@ -9,7 +9,6 @@ export default defineConfig([
     ignores: [
       "node_modules",
       "test",
-      "eslint.config.js",
     ],
   },
   stylistic.configs.customize({
@@ -26,7 +25,7 @@ export default defineConfig([
         ...globals.commonjs,
         ...globals.node,
       },
-      ecmaVersion: 2016,
+      ecmaVersion: 2018,
     },
     extends: [
       eslint.configs.recommended,

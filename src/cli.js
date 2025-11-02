@@ -26,7 +26,7 @@ program
   .option(
     "-c, --crx-version [number]",
     "CRX format version, can be either 2 or 3, defaults to 3",
-    parseInt
+    parseInt,
   )
   .description("generate a private key in [directory]/key.pem")
   .action(keygen);
@@ -36,7 +36,7 @@ program
   .description("pack [directory] into a .crx extension")
   .option(
     "-o, --output <file>",
-    "write the crx content to <file> instead of stdout"
+    "write the crx content to <file> instead of stdout",
   )
   .option("--zip-output <file>", "write the zip content to <file>")
   .option(
@@ -44,12 +44,12 @@ program
     "relative path to private key [key.pem], defaults to [directory/../key.pem]")
   .option(
     "-b, --max-buffer <total>",
-    "max amount of memory allowed to generate the crx, in byte"
+    "max amount of memory allowed to generate the crx, in byte",
   )
   .option(
     "-c, --crx-version [number]",
     "CRX format version, can be either 2 or 3, defaults to 3",
-    parseInt
+    parseInt,
   )
   .action(pack);
 
@@ -97,7 +97,7 @@ function pack(dir, program) {
       throw new Error(
         "-o file is expected to have a `.crx` suffix: ["
         + program.output
-        + "] was given."
+        + "] was given.",
       );
     }
   }
@@ -107,7 +107,7 @@ function pack(dir, program) {
       throw new Error(
         "--zip-output file is expected to have a `.zip` suffix: ["
         + program.zipOutput
-        + "] was given."
+        + "] was given.",
       );
     }
   }

@@ -50,6 +50,6 @@ function generateSignature(privateKey, contents) {
       .createSign("sha1")
       .update(contents)
       .sign(privateKey),
-    "binary"
+    "binary",
   );
 }

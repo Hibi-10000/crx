@@ -107,7 +107,7 @@ class ChromeExtension {
     return new Promise(function (resolve, reject) {
       if (!privateKey) {
         return reject(
-          "Impossible to generate a public key: privateKey option has not been defined or is empty."
+          "Impossible to generate a public key: privateKey option has not been defined or is empty.",
         );
       }
 
@@ -132,7 +132,7 @@ class ChromeExtension {
 
       if (!selfie.loaded) {
         throw new Error(
-          "crx.load needs to be called first in order to prepare the workspace."
+          "crx.load needs to be called first in order to prepare the workspace.",
         );
       }
 
