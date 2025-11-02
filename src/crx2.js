@@ -13,14 +13,14 @@ import crypto from "node:crypto";
  * @returns {Buffer}
  */
 export default function generatePackage(privateKey, publicKey, contents) {
-  var signature = generateSignature(privateKey, contents);
+  const signature = generateSignature(privateKey, contents);
 
-  var keyLength = publicKey.length;
-  var sigLength = signature.length;
-  var zipLength = contents.length;
-  var length = 16 + keyLength + sigLength + zipLength;
+  const keyLength = publicKey.length;
+  const sigLength = signature.length;
+  const zipLength = contents.length;
+  const length = 16 + keyLength + sigLength + zipLength;
 
-  var crx = Buffer.alloc(length);
+  const crx = Buffer.alloc(length);
 
   crx.write("Cr24" + new Array(13).join("\x00"), "binary");
 

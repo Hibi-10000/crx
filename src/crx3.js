@@ -16,13 +16,13 @@ import * as crx from "./crx3.pb.js";
  * @returns {Buffer}
  */
 export default function generatePackage(privateKey, publicKey, contents) {
-  var pb;
+  let pb;
 
   pb = new PBf();
   crx.writeSignedData({
     crx_id: getCrxId(publicKey),
   }, pb);
-  var signedHeaderData = pb.finish();
+  const signedHeaderData = pb.finish();
 
   pb = new PBf();
   crx.writeCrxFileHeader({
@@ -32,18 +32,18 @@ export default function generatePackage(privateKey, publicKey, contents) {
     }],
     signed_header_data: signedHeaderData,
   }, pb);
-  var header = Buffer.from(pb.finish());
+  const header = Buffer.from(pb.finish());
 
-  var size
+  const size
     = kSignature.length // Magic constant
       + kVersion.length // Version number
       + SIZE_BYTES // Header size
       + header.length
       + contents.length;
 
-  var result = Buffer.allocUnsafe(size);
+  const result = Buffer.allocUnsafe(size);
 
-  var index = 0;
+  let index = 0;
   kSignature.copy(result, index);
   kVersion.copy(result, index += kSignature.length);
   result.writeUInt32LE(header.length, index += kVersion.length);
@@ -94,7 +94,7 @@ const kSignatureContext = Buffer.from("CRX3 SignedData\x00", "utf8");
  * @returns {Buffer}
  */
 function getCrxId(publicKey) {
-  var hash = crypto.createHash("sha256");
+  const hash = crypto.createHash("sha256");
   hash.update(publicKey);
   return hash.digest().slice(0, CRX_ID_SIZE);
 }
@@ -108,13 +108,13 @@ function getCrxId(publicKey) {
 * @returns {Buffer}
 */
 function generateSignature(privateKey, signedHeaderData, contents) {
-  var hash = crypto.createSign("sha256");
+  const hash = crypto.createSign("sha256");
 
   // Magic constant
   hash.update(kSignatureContext);
 
   // Size of signed_header_data
-  var sizeOctets = Buffer.allocUnsafe(SIZE_BYTES);
+  const sizeOctets = Buffer.allocUnsafe(SIZE_BYTES);
   sizeOctets.writeUInt32LE(signedHeaderData.length, 0);
   hash.update(sizeOctets);
 

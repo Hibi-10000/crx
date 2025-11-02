@@ -8,9 +8,9 @@ import rsa from "node-rsa";
 import program from "commander";
 import ChromeExtension from "./index.js";
 
-var pkg = JSON.parse(fs.readFileSync("../package.json", "utf8"));
+const pkg = JSON.parse(fs.readFileSync("../package.json", "utf8"));
 
-var cwd = process.cwd();
+const cwd = process.cwd();
 
 program.version(pkg.version);
 // coming soon
@@ -59,7 +59,7 @@ program.parse(process.argv);
  */
 function generateKeyFile(keyPath, opts) {
   // Chromium (tested on 72.0.3626.109) which generates CRX v3 files requires pkcs8 key
-  var pkcs = "pkcs" + (opts.crxVersion === 2 ? "1" : "8") + "-private-pem";
+  const pkcs = "pkcs" + (opts.crxVersion === 2 ? "1" : "8") + "-private-pem";
 
   return Promise.resolve(new rsa({ b: 2048 }))
     .then(key => key.exportKey(pkcs))
@@ -70,7 +70,7 @@ function generateKeyFile(keyPath, opts) {
 function keygen(dir, program) {
   dir = dir ? resolve(cwd, dir) : cwd;
 
-  var keyPath = join(dir, "key.pem");
+  const keyPath = join(dir, "key.pem");
 
   fs.exists(keyPath, function (exists) {
     if (exists && !program.force) {
@@ -82,11 +82,11 @@ function keygen(dir, program) {
 }
 
 function pack(dir, program) {
-  var input = dir ? resolve(cwd, dir) : cwd;
-  var keyPath = program.privateKey
+  const input = dir ? resolve(cwd, dir) : cwd;
+  const keyPath = program.privateKey
     ? resolve(cwd, program.privateKey)
     : join(input, "..", "key.pem");
-  var output;
+  let output;
 
   if (program.output) {
     if (path.extname(program.output) !== ".crx") {
@@ -108,7 +108,7 @@ function pack(dir, program) {
     }
   }
 
-  var crx = new ChromeExtension({
+  const crx = new ChromeExtension({
     rootDirectory: input,
     maxBuffer: program.maxBuffer,
     version: program.crxVersion || 3,
@@ -136,7 +136,7 @@ function pack(dir, program) {
         .then(() => crx.loadContents())
         .then(function (fileBuffer) {
           if (program.zipOutput) {
-            var outFile = resolve(cwd, program.zipOutput);
+            const outFile = resolve(cwd, program.zipOutput);
 
             fs.createWriteStream(outFile).end(fileBuffer);
           }
@@ -155,7 +155,7 @@ function pack(dir, program) {
             output = path.basename(cwd) + ".crx";
           }
 
-          var outFile = resolve(cwd, output);
+          const outFile = resolve(cwd, output);
           if (outFile) {
             fs.createWriteStream(outFile).end(crxBuffer);
           }

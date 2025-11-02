@@ -14,7 +14,7 @@ export default function resolve(pathOrFiles) {
 
     // new mode, with a list of files
     else if (Array.isArray(pathOrFiles)) {
-      var manifestFile = "";
+      let manifestFile = "";
 
       pathOrFiles.some(function (f) {
         if (/(^|\/)manifest.json$/.test(f)) {
@@ -29,7 +29,7 @@ export default function resolve(pathOrFiles) {
         );
       }
 
-      var manifestDir = path.dirname(manifestFile);
+      const manifestDir = path.dirname(manifestFile);
 
       return resolve({
         path: path.resolve(manifestDir),

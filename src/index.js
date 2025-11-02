@@ -45,15 +45,15 @@ class ChromeExtension {
       return this.load().then(this.pack.bind(this, contentsBuffer));
     }
 
-    var selfie = this;
-    var packP = [
+    const selfie = this;
+    const packP = [
       this.generatePublicKey(),
       contentsBuffer || selfie.loadContents(),
     ];
 
     return Promise.all(packP).then(function (outputs) {
-      var publicKey = outputs[0];
-      var contents = outputs[1];
+      const publicKey = outputs[0];
+      const contents = outputs[1];
 
       selfie.publicKey = publicKey;
 
@@ -72,13 +72,13 @@ class ChromeExtension {
    * @returns {Promise}
    */
   load(path) {
-    var selfie = this;
+    const selfie = this;
 
     return resolve(path || selfie.rootDirectory).then(function (metadata) {
       selfie.path = metadata.path;
       selfie.src = metadata.src;
 
-      var manifestPath = join(selfie.path, "manifest.json");
+      const manifestPath = join(selfie.path, "manifest.json");
 
       selfie.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
       selfie.loaded = true;
@@ -101,7 +101,7 @@ class ChromeExtension {
    * });
    */
   generatePublicKey() {
-    var privateKey = this.privateKey;
+    const privateKey = this.privateKey;
 
     return new Promise(function (resolve, reject) {
       if (!privateKey) {
@@ -110,7 +110,7 @@ class ChromeExtension {
         );
       }
 
-      var key = new RSA(privateKey);
+      const key = new RSA(privateKey);
 
       resolve(key.exportKey("pkcs8-public-der"));
     });
@@ -123,11 +123,11 @@ class ChromeExtension {
    * @returns {Promise}
    */
   loadContents() {
-    var selfie = this;
+    const selfie = this;
 
     return new Promise(function (resolve, reject) {
-      var archive = archiver("zip", { zlib: { level: 9 } });
-      var contents = Buffer.from("");
+      const archive = archiver("zip", { zlib: { level: 9 } });
+      let contents = Buffer.from("");
 
       if (!selfie.loaded) {
         throw new Error(
@@ -182,7 +182,7 @@ class ChromeExtension {
     // Handling Windows Path
     // Possibly to be moved in a different method
     if (typeof keyOrPath === "string") {
-      var charCode = keyOrPath.charCodeAt(0);
+      const charCode = keyOrPath.charCodeAt(0);
 
       // 65 (A) < charCode < 122 (z)
       if (charCode >= 65 && charCode <= 122 && keyOrPath[1] === ":") {
@@ -225,7 +225,7 @@ class ChromeExtension {
       throw new Error("No URL provided for update.xml.");
     }
 
-    var browserVersion = this.manifest.minimum_chrome_version
+    const browserVersion = this.manifest.minimum_chrome_version
       || (this.version < 3 && "29.0.0") // Earliest version with extensions API
       || "64.0.3242"; // Chrome started generating CRX3 packages
 

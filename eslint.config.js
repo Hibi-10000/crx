@@ -31,6 +31,8 @@ export default defineConfig([
     ],
     rules: {
       "@stylistic/spaced-comment": 0,
+      "no-var": "error",
+      "prefer-const": "error",
     },
   },
 ]);
