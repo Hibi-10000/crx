@@ -15,12 +15,12 @@ var crx = require("./crx3.js.pb");
  * @param {Buffer} contents
  * @returns {Buffer}
  */
-module.exports = function generatePackage (privateKey, publicKey, contents) {
+module.exports = function generatePackage(privateKey, publicKey, contents) {
   var pb;
 
   pb = new PBf();
   crx.SignedData.write({
-    crx_id: getCrxId(publicKey)
+    crx_id: getCrxId(publicKey),
   }, pb);
   var signedHeaderData = pb.finish();
 
@@ -28,18 +28,18 @@ module.exports = function generatePackage (privateKey, publicKey, contents) {
   crx.CrxFileHeader.write({
     sha256_with_rsa: [{
       public_key: publicKey,
-      signature : generateSignature(privateKey, signedHeaderData, contents)
+      signature: generateSignature(privateKey, signedHeaderData, contents),
     }],
-    signed_header_data: signedHeaderData
+    signed_header_data: signedHeaderData,
   }, pb);
   var header = Buffer.from(pb.finish());
 
-  var size =
-    kSignature.length + // Magic constant
-    kVersion.length + // Version number
-    SIZE_BYTES + // Header size
-    header.length +
-    contents.length;
+  var size
+    = kSignature.length // Magic constant
+      + kVersion.length // Version number
+      + SIZE_BYTES // Header size
+      + header.length
+      + contents.length;
 
   var result = Buffer.allocUnsafe(size);
 
@@ -93,7 +93,7 @@ const kSignatureContext = Buffer.from("CRX3 SignedData\x00", "utf8");
  * @param {Buffer} publicKey
  * @returns {Buffer}
  */
-function getCrxId (publicKey) {
+function getCrxId(publicKey) {
   var hash = crypto.createHash("sha256");
   hash.update(publicKey);
   return hash.digest().slice(0, CRX_ID_SIZE);
@@ -107,7 +107,7 @@ function getCrxId (publicKey) {
 * @param {Buffer} contents
 * @returns {Buffer}
 */
-function generateSignature (privateKey, signedHeaderData, contents) {
+function generateSignature(privateKey, signedHeaderData, contents) {
   var hash = crypto.createSign("sha256");
 
   // Magic constant

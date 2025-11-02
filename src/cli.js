@@ -3,7 +3,7 @@
 var path = require("path");
 var fs = require("fs");
 var rsa = require("node-rsa");
-var {promisify} = require("util");
+var { promisify } = require("util");
 var writeFile = promisify(fs.writeFile);
 var readFile = promisify(fs.readFile);
 
@@ -55,7 +55,6 @@ program
 
 program.parse(process.argv);
 
-
 /**
  * Generate a new key file
  * @param {String} keyPath path of the key file to create
@@ -77,7 +76,7 @@ function keygen(dir, program) {
 
   var keyPath = join(dir, "key.pem");
 
-  fs.exists(keyPath, function(exists) {
+  fs.exists(keyPath, function (exists) {
     if (exists && !program.force) {
       throw new Error("key.pem already exists in the given location.");
     }
@@ -96,9 +95,9 @@ function pack(dir, program) {
   if (program.output) {
     if (path.extname(program.output) !== ".crx") {
       throw new Error(
-        "-o file is expected to have a `.crx` suffix: [" +
-          program.output +
-          "] was given."
+        "-o file is expected to have a `.crx` suffix: ["
+        + program.output
+        + "] was given."
       );
     }
   }
@@ -106,9 +105,9 @@ function pack(dir, program) {
   if (program.zipOutput) {
     if (path.extname(program.zipOutput) !== ".zip") {
       throw new Error(
-        "--zip-output file is expected to have a `.zip` suffix: [" +
-          program.zipOutput +
-          "] was given."
+        "--zip-output file is expected to have a `.zip` suffix: ["
+        + program.zipOutput
+        + "] was given."
       );
     }
   }
@@ -116,29 +115,30 @@ function pack(dir, program) {
   var crx = new ChromeExtension({
     rootDirectory: input,
     maxBuffer: program.maxBuffer,
-    version: program.crxVersion || 3
+    version: program.crxVersion || 3,
   });
 
   readFile(keyPath)
-    .then(null, function(err) {
+    .then(null, function (err) {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
         return generateKeyFile(keyPath, program).then(() => {
           process.stderr.write("Created new private key at: " + keyPath + ".\n");
           return readFile(keyPath);
         });
-      } else {
+      }
+      else {
         throw err;
       }
     })
-    .then(function(key) {
+    .then(function (key) {
       crx.privateKey = key;
     })
-    .then(function() {
+    .then(function () {
       crx
         .load()
         .then(() => crx.loadContents())
-        .then(function(fileBuffer) {
+        .then(function (fileBuffer) {
           if (program.zipOutput) {
             var outFile = resolve(cwd, program.zipOutput);
 
@@ -148,7 +148,7 @@ function pack(dir, program) {
             return crx.pack(fileBuffer);
           }
         })
-        .then(function(crxBuffer) {
+        .then(function (crxBuffer) {
           if (program.zipOutput) {
             return;
           }

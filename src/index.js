@@ -40,7 +40,7 @@ class ChromeExtension {
    * });
    *
    */
-  pack (contentsBuffer) {
+  pack(contentsBuffer) {
     if (!this.loaded) {
       return this.load().then(this.pack.bind(this, contentsBuffer));
     }
@@ -48,10 +48,10 @@ class ChromeExtension {
     var selfie = this;
     var packP = [
       this.generatePublicKey(),
-      contentsBuffer || selfie.loadContents()
+      contentsBuffer || selfie.loadContents(),
     ];
 
-    return Promise.all(packP).then(function(outputs) {
+    return Promise.all(packP).then(function (outputs) {
       var publicKey = outputs[0];
       var contents = outputs[1];
 
@@ -71,10 +71,10 @@ class ChromeExtension {
    * @param {string=} path
    * @returns {Promise}
    */
-  load (path) {
+  load(path) {
     var selfie = this;
 
-    return resolve(path || selfie.rootDirectory).then(function(metadata) {
+    return resolve(path || selfie.rootDirectory).then(function (metadata) {
       selfie.path = metadata.path;
       selfie.src = metadata.src;
 
@@ -101,10 +101,10 @@ class ChromeExtension {
    *   // do something with publicKey
    * });
    */
-  generatePublicKey () {
+  generatePublicKey() {
     var privateKey = this.privateKey;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       if (!privateKey) {
         return reject(
           "Impossible to generate a public key: privateKey option has not been defined or is empty."
@@ -123,11 +123,11 @@ class ChromeExtension {
    *
    * @returns {Promise}
    */
-  loadContents () {
+  loadContents() {
     var selfie = this;
 
-    return new Promise(function(resolve, reject) {
-      var archive = archiver("zip", { zlib: { level: 9 }});
+    return new Promise(function (resolve, reject) {
+      var archive = archiver("zip", { zlib: { level: 9 } });
       var contents = Buffer.from("");
 
       if (!selfie.loaded) {
@@ -145,11 +145,11 @@ class ChromeExtension {
 
         @see https://github.com/oncletom/crx/issues/61
       */
-      archive.on("data", function(buf) {
+      archive.on("data", function (buf) {
         contents = Buffer.concat([contents, buf]);
       });
 
-      archive.on("finish", function() {
+      archive.on("finish", function () {
         resolve(contents);
       });
 
@@ -157,7 +157,7 @@ class ChromeExtension {
         .glob(selfie.src, {
           cwd: selfie.path,
           matchBase: true,
-          ignore: ["*.pem", ".git", "*.crx"]
+          ignore: ["*.pem", ".git", "*.crx"],
         })
         .finalize();
     });
@@ -173,7 +173,7 @@ class ChromeExtension {
    * @param {Buffer|string} [publicKey] the public key to use to generate the app ID
    * @returns {string}
    */
-  generateAppId (keyOrPath) {
+  generateAppId(keyOrPath) {
     keyOrPath = keyOrPath || this.publicKey;
 
     if (typeof keyOrPath !== "string" && !(keyOrPath instanceof Buffer)) {
@@ -221,7 +221,7 @@ class ChromeExtension {
    *   [Chromium switches to CRX3]{@link https://chromium.googlesource.com/chromium/src.git/+/b8bc9f99ef4ad6223dfdcafd924051561c05ac75}
    * @returns {Buffer}
    */
-  generateUpdateXML () {
+  generateUpdateXML() {
     if (!this.codebase) {
       throw new Error("No URL provided for update.xml.");
     }

@@ -12,7 +12,7 @@ var crypto = require("crypto");
  * @param {Buffer} contents
  * @returns {Buffer}
  */
-module.exports = function generatePackage (privateKey, publicKey, contents) {
+module.exports = function generatePackage(privateKey, publicKey, contents) {
   var signature = generateSignature(privateKey, contents);
 
   var keyLength = publicKey.length;
@@ -44,7 +44,7 @@ module.exports = function generatePackage (privateKey, publicKey, contents) {
  * @param {Buffer} contents
  * @returns {Buffer}
  */
-function generateSignature (privateKey, contents) {
+function generateSignature(privateKey, contents) {
   return Buffer.from(
     crypto
       .createSign("sha1")

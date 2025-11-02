@@ -3,12 +3,12 @@
 var path = require("path");
 
 module.exports = function resolve(pathOrFiles) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // legacy and original mode
     if (typeof pathOrFiles === "string") {
       return resolve({
         path: path.resolve(pathOrFiles),
-        src: "**"
+        src: "**",
       });
     }
 
@@ -16,7 +16,7 @@ module.exports = function resolve(pathOrFiles) {
     else if (Array.isArray(pathOrFiles)) {
       var manifestFile = "";
 
-      pathOrFiles.some(function(f) {
+      pathOrFiles.some(function (f) {
         if (/(^|\/)manifest.json$/.test(f)) {
           manifestFile = f;
           return true;
@@ -34,13 +34,13 @@ module.exports = function resolve(pathOrFiles) {
       return resolve({
         path: path.resolve(manifestDir),
         src:
-          "{" +
-          pathOrFiles
-            .map(function(f) {
+          "{"
+          + pathOrFiles
+            .map(function (f) {
               return path.relative(manifestDir, f);
             })
-            .join(",") +
-          "}"
+            .join(",")
+            + "}",
       });
     }
 
