@@ -38,7 +38,7 @@
     "archiver": "^4.0.2",
     "commander": "^2.20.0",
     "node-rsa": "^1.0.5",
-    "pbf": "^3.2.0"
+    "pbf": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
