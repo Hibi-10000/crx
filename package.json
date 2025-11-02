@@ -18,6 +18,8 @@
     "pnpm": ">=10.16"
   },
   "scripts": {
+    "lint": "eslint .",
+    "format": "eslint --fix .",
     "test": "nyc tape ./test/*.js",
     "posttest": "eslint src/*.js"
   },
@@ -38,8 +40,11 @@
     "pbf": "^3.2.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@stylistic/eslint-plugin": "^5.5.0",
     "adm-zip": "^0.4.13",
-    "eslint": "^5.16.0",
+    "eslint": "^9.38.0",
+    "globals": "^16.4.0",
     "nyc": "^14.1.1",
     "tape": "^4.11.0"
   }
