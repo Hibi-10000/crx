@@ -2,7 +2,7 @@
 
 import PBf from "pbf";
 import crypto from "crypto";
-import crx from "./crx3.pb.js";
+import * as crx from "./crx3.pb.js";
 
 /**
  * Generates and returns a signed package from extension content.
@@ -19,13 +19,13 @@ export default function generatePackage(privateKey, publicKey, contents) {
   var pb;
 
   pb = new PBf();
-  crx.SignedData.write({
+  crx.writeSignedData({
     crx_id: getCrxId(publicKey),
   }, pb);
   var signedHeaderData = pb.finish();
 
   pb = new PBf();
-  crx.CrxFileHeader.write({
+  crx.writeCrxFileHeader({
     sha256_with_rsa: [{
       public_key: publicKey,
       signature: generateSignature(privateKey, signedHeaderData, contents),
