@@ -22,9 +22,7 @@ export default defineConfig([
     files: ["**/*.js"],
     languageOptions: {
       globals: {
-        //...globals.browser,
-        ...globals.commonjs,
-        ...globals.node,
+        ...globals.nodeBuiltin,
       },
       ecmaVersion: 2018,
     },

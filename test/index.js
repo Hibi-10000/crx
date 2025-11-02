@@ -1,22 +1,21 @@
-/* global require, __dirname, Buffer */
 'use strict';
 
-var fs = require("fs");
-var test = require("tape");
-var Zip = require("adm-zip");
-var ChromeExtension = require("../");
-var join = require("path").join;
-var privateKey = fs.readFileSync(join(__dirname, "key.pem"));
-var updateXml2 = fs.readFileSync(join(__dirname, "expectations", "updateCRX2.xml"));
-var updateXml3 = fs.readFileSync(join(__dirname, "expectations", "updateCRX3.xml"));
-var updateXmlCustom = fs.readFileSync(join(__dirname, "expectations", "updateProdVersionMin.xml"));
+import fs from "node:fs";
+import { join } from "node:path";
+import test from "tape";
+import Zip from "adm-zip";
+import ChromeExtension from "../index.js";
+var privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
+var updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));
+var updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
+var updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
 
 function newCrx(opts){
   return new ChromeExtension(Object.assign({
     privateKey: privateKey,
     path: '/tmp',
     codebase: "http://localhost:8000/myFirstExtension.crx",
-    rootDirectory: join(__dirname, "myFirstExtension")
+    rootDirectory: join(import.meta.dirname, "myFirstExtension")
   }, opts));
 }
 
@@ -41,7 +40,7 @@ TESTS.load = function(t, opts){
   }).catch(t.error.bind(t));
 
   // Test absolute path
-  newCrx().load(join(__dirname, "myFirstExtension")).then(function(crx){
+  newCrx().load(join(import.meta.dirname, "myFirstExtension")).then(function(crx){
     t.ok(crx);
   }).catch(t.error.bind(t));
 

@@ -1,8 +1,8 @@
 "use strict";
 
-var PBf = require("pbf");
-var crypto = require("crypto");
-var crx = require("./crx3.pb.js");
+import PBf from "pbf";
+import crypto from "crypto";
+import crx from "./crx3.pb.js";
 
 /**
  * Generates and returns a signed package from extension content.
@@ -15,7 +15,7 @@ var crx = require("./crx3.pb.js");
  * @param {Buffer} contents
  * @returns {Buffer}
  */
-module.exports = function generatePackage(privateKey, publicKey, contents) {
+export default function generatePackage(privateKey, publicKey, contents) {
   var pb;
 
   pb = new PBf();

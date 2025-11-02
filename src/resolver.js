@@ -1,8 +1,8 @@
 "use strict";
 
-var path = require("path");
+import path from "node:path";
 
-module.exports = function resolve(pathOrFiles) {
+export default function resolve(pathOrFiles) {
   return new Promise(function (resolve, reject) {
     // legacy and original mode
     if (typeof pathOrFiles === "string") {

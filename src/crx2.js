@@ -1,6 +1,6 @@
 "use strict";
 
-var crypto = require("crypto");
+import crypto from "node:crypto";
 
 /**
  * Generates and returns a signed package from extension content.
@@ -12,7 +12,7 @@ var crypto = require("crypto");
  * @param {Buffer} contents
  * @returns {Buffer}
  */
-module.exports = function generatePackage(privateKey, publicKey, contents) {
+export default function generatePackage(privateKey, publicKey, contents) {
   var signature = generateSignature(privateKey, contents);
 
   var keyLength = publicKey.length;

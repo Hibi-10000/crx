@@ -1,18 +1,14 @@
 #!/usr/bin/env node
 
-var path = require("path");
-var fs = require("fs");
-var rsa = require("node-rsa");
-var { promisify } = require("util");
-var writeFile = promisify(fs.writeFile);
-var readFile = promisify(fs.readFile);
+import path, { resolve, join } from "node:path";
+import fs from "node:fs";
+import { writeFile, readFile } from "node:fs/promises";
+import rsa from "node-rsa";
 
-var program = require("commander");
-var ChromeExtension = require(".");
-var pkg = require("../package.json");
+import program from "commander";
+import ChromeExtension from "./index.js";
 
-var resolve = path.resolve;
-var join = path.join;
+var pkg = JSON.parse(fs.readFileSync("../package.json", "utf8"));
 
 var cwd = process.cwd();
 
@@ -170,4 +166,4 @@ function pack(dir, program) {
     });
 }
 
-module.exports = program;
+export default program;

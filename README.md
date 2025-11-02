@@ -23,17 +23,17 @@ $ npm install crx
 Asynchronous functions returns a native ECMAScript Promise.
 
 ```js
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const ChromeExtension = require('crx');
+import ChromeExtension from 'crx';
 
 const crx = new ChromeExtension({
   codebase: 'http://localhost:8000/myExtension.crx',
   privateKey: fs.readFileSync('./key.pem')
 });
 
-crx.load( path.resolve(__dirname, './myExtension') )
+crx.load(path.resolve(import.meta.dirname, './myExtension'))
   .then(crx => crx.pack())
   .then(crxBuffer => {
     const updateXML = crx.generateUpdateXML()
@@ -41,8 +41,8 @@ crx.load( path.resolve(__dirname, './myExtension') )
     fs.writeFileSync('../update.xml', updateXML);
     fs.writeFileSync('../myExtension.crx', crxBuffer);
   })
-  .catch(err=>{
-    console.error( err );
+  .catch(err => {
+    console.error(err);
   });
 ```
 

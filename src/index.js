@@ -1,13 +1,13 @@
 "use strict";
 
-var path = require("path");
-var join = path.join;
-var crypto = require("crypto");
-var RSA = require("node-rsa");
-var archiver = require("archiver");
-var resolve = require("./resolver.js");
-var crx2 = require("./crx2.js");
-var crx3 = require("./crx3.js");
+import fs from "node:fs";
+import { join } from "node:path";
+import crypto from "node:crypto";
+import RSA from "node-rsa";
+import archiver from "archiver";
+import resolve from "./resolver.js";
+import crx2 from "./crx2.js";
+import crx3 from "./crx3.js";
 
 const DEFAULTS = {
   appId: null,
@@ -79,9 +79,8 @@ class ChromeExtension {
       selfie.src = metadata.src;
 
       var manifestPath = join(selfie.path, "manifest.json");
-      delete require.cache[manifestPath];
 
-      selfie.manifest = require(manifestPath);
+      selfie.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
       selfie.loaded = true;
 
       return selfie;
@@ -239,4 +238,4 @@ class ChromeExtension {
   }
 }
 
-module.exports = ChromeExtension;
+export default ChromeExtension;

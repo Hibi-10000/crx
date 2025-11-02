@@ -9,6 +9,7 @@
     "type": "git",
     "url": "git://github.com/oncletom/crx.git"
   },
+  "type": "module",
   "main": "./src/index.js",
   "bin": {
     "crx": "./src/cli.js"
