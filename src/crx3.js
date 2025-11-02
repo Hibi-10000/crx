@@ -2,7 +2,7 @@
 
 var PBf = require("pbf");
 var crypto = require("crypto");
-var crx = require("./crx3.js.pb");
+var crx = require("./crx3.pb.js");
 
 /**
  * Generates and returns a signed package from extension content.

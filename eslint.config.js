@@ -8,6 +8,7 @@ export default defineConfig([
   {
     ignores: [
       "node_modules",
+      "src/crx3.pb.js",
       "test",
     ],
   },
