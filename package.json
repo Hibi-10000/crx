@@ -21,6 +21,7 @@
   "scripts": {
     "lint": "eslint .",
     "format": "eslint --fix .",
+    "test:node": "node --experimental-test-coverage --test-coverage-exclude=src/crx3.pb.js --test ./test/index.test.js",
     "test": "nyc tape ./test/index.js"
   },
   "nyc": {

@@ -1,7 +1,7 @@
 "use strict";
 
 import fs from "node:fs";
-import { join } from "node:path";
+import path, { join } from "node:path";
 import test from "tape";
 import Zip from "adm-zip";
 import ChromeExtension from "../src/index.js";
@@ -22,7 +22,7 @@ function newCrx(opts) {
 }
 
 /** @type {Record<string, (t: import("tape").Test, opts?: { version: number }) => Promise<void>>} */
-const TESTS = {
+export const TESTS = {
   ChromeExtension: (t, opts) => {
     t.plan(2);
 
@@ -33,7 +33,7 @@ const TESTS = {
   load: (t, opts) => {
     t.plan(6);
 
-    newCrx(opts).load().then(t.pass);
+    newCrx(opts).load().then(c => t.pass(/*JSON.stringify*/(c)));
 
     // Test relative path
     newCrx().load("./test/myFirstExtension").then((crx) => {
@@ -224,7 +224,7 @@ const TESTS = {
 // Setup list of different configurations to test
 // Each key is the test name prefix.
 // Each value is an options obect to be passed to test implementation.
-const TEST_OPTIONS = {
+export const TEST_OPTIONS = {
   "": undefined, // use defaults
   v2: { version: 2 },
   v3: { version: 3 },
@@ -232,6 +232,7 @@ const TEST_OPTIONS = {
 
 // Run whole list of tests for each of the configurations
 Reflect.ownKeys(TEST_OPTIONS).forEach((key) => {
+  if (!(process.argv[2] && import.meta.filename === path.resolve(process.argv[2]))) return;
   for (const name in TESTS) {
     test(`${key === "" ? "default" : key}: ${name}`, t => TESTS[name](t, TEST_OPTIONS[key]));
   }
