@@ -8,8 +8,6 @@ Packages are available to use `crx` with:
 - *gulp*: [gulp-crx-pack](https://npmjs.com/gulp-crx-pack)
 - *webpack*: [crx-webpack-plugin](https://npmjs.com/crx-webpack-plugin)
 
-Massive hat tip to the [node-rsa project](https://npmjs.com/node-rsa) for the pure JavaScript encryption!
-
 **Compatibility**: this extension is compatible with `node>=10`.
 
 ## Install

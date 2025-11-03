@@ -2,7 +2,7 @@
 
 import path from "node:path";
 import fs from "node:fs";
-import rsa from "node-rsa";
+import crypto from "node:crypto";
 
 import { program } from "commander";
 import ChromeExtension from "./index.js";
@@ -57,11 +57,19 @@ program.parse(process.argv);
  * @returns {Promise}
  */
 function generateKeyFile(keyPath, opts) {
-  // Chromium (tested on 72.0.3626.109) which generates CRX v3 files requires pkcs8 key
-  const pkcs = `pkcs${opts.crxVersion === 2 ? "1" : "8"}-private-pem`;
-
-  const keyVal = new rsa({ b: 2048 }).exportKey(pkcs);
-  return fs.writeFileSync(keyPath, keyVal);
+  const { privateKey } = crypto.generateKeyPairSync("rsa", {
+    modulusLength: 2048,
+    publicKeyEncoding: {
+      type: "spki",
+      format: "der",
+    },
+    privateKeyEncoding: {
+      // Chromium (tested on 72.0.3626.109) which generates CRX v3 files requires pkcs8 key
+      type: `pkcs${opts.crxVersion === 2 ? "1" : "8"}`,
+      format: "pem",
+    },
+  });
+  return fs.writeFileSync(keyPath, privateKey);
 }
 
 function keygen(dir, options) {

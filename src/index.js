@@ -3,7 +3,6 @@
 import fs from "node:fs";
 import { join } from "node:path";
 import crypto from "node:crypto";
-import RSA from "node-rsa";
 import archiver from "archiver";
 import resolve from "./resolver.js";
 import crx2 from "./crx2.js";
@@ -99,9 +98,9 @@ class ChromeExtension {
         );
       }
 
-      const key = new RSA(privateKey);
+      const key = crypto.createPublicKey(privateKey);
 
-      resolve(key.exportKey("pkcs8-public-der"));
+      resolve(key.export({ type: "spki", format: "der" }));
     });
   }
 

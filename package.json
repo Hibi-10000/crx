@@ -37,14 +37,12 @@
   "dependencies": {
     "archiver": "^4.0.2",
     "commander": "^14.0.2",
-    "node-rsa": "^1.1.1",
     "pbf": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@stylistic/eslint-plugin": "^5.5.0",
     "@types/archiver": "^3.1.1",
-    "@types/node-rsa": "^1.1.4",
     "adm-zip": "^0.4.13",
     "eslint": "^9.38.0",
     "globals": "^16.4.0",
