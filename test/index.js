@@ -1,8 +1,7 @@
 "use strict";
 
 import fs from "node:fs";
-import path, { join } from "node:path";
-import test from "tape";
+import { join } from "node:path";
 import Zip from "adm-zip";
 import ChromeExtension from "../src/index.js";
 
@@ -229,11 +228,3 @@ export const TEST_OPTIONS = {
   v2: { version: 2 },
   v3: { version: 3 },
 };
-
-// Run whole list of tests for each of the configurations
-Reflect.ownKeys(TEST_OPTIONS).forEach((key) => {
-  if (!(process.argv[2] && import.meta.filename === path.resolve(process.argv[2]))) return;
-  for (const name in TESTS) {
-    test(`${key === "" ? "default" : key}: ${name}`, t => TESTS[name](t, TEST_OPTIONS[key]));
-  }
-});
