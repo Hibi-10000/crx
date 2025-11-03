@@ -9,7 +9,6 @@ export default defineConfig([
     ignores: [
       "node_modules",
       "src/crx3.pb.js",
-      "test",
     ],
   },
   stylistic.configs.customize({
@@ -34,6 +33,13 @@ export default defineConfig([
       "no-var": "error",
       "prefer-const": "error",
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
+      "prefer-arrow-callback": "error",
+    },
+  },
+  {
+    files: ["test/**/*.js"],
+    languageOptions: {
+      ecmaVersion: 2020,
     },
   },
 ]);

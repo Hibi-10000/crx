@@ -1,219 +1,219 @@
-'use strict';
+"use strict";
 
 import fs from "node:fs";
 import { join } from "node:path";
 import test from "tape";
 import Zip from "adm-zip";
 import ChromeExtension from "../src/index.js";
-var privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
-var updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));
-var updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
-var updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
+const privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
+const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));
+const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
+const updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
 
-function newCrx(opts){
+function newCrx(opts) {
   return new ChromeExtension(Object.assign({
     privateKey: privateKey,
-    path: '/tmp',
+    path: "/tmp",
     codebase: "http://localhost:8000/myFirstExtension.crx",
-    rootDirectory: join(import.meta.dirname, "myFirstExtension")
+    rootDirectory: join(import.meta.dirname, "myFirstExtension"),
   }, opts));
 }
 
 const TESTS = {};
 
-TESTS.ChromeExtension = function(t, opts){
+TESTS.ChromeExtension = function (t, opts) {
   t.plan(2);
 
   t.throws(() => ChromeExtension({}));
   t.ok(newCrx(opts));
 };
 
-
-TESTS.load = function(t, opts){
+TESTS.load = function (t, opts) {
   t.plan(6);
 
   newCrx(opts).load().then(t.pass);
 
   // Test relative path
-  newCrx().load("./test/myFirstExtension").then(function(crx){
+  newCrx().load("./test/myFirstExtension").then((crx) => {
     t.ok(crx);
   }).catch(t.error.bind(t));
 
   // Test absolute path
-  newCrx().load(join(import.meta.dirname, "myFirstExtension")).then(function(crx){
+  newCrx().load(join(import.meta.dirname, "myFirstExtension")).then((crx) => {
     t.ok(crx);
   }).catch(t.error.bind(t));
 
   // Test list of files
-  var fileList = [
-    'test/myFirstExtension/manifest.json',
-    'test/myFirstExtension/icon.png',
+  const fileList = [
+    "test/myFirstExtension/manifest.json",
+    "test/myFirstExtension/icon.png",
   ];
 
-  newCrx(opts).load(fileList).then(function(crx){
+  newCrx(opts).load(fileList).then((crx) => {
     t.ok(crx);
   });
 
-  var fileList = [
-    'test/myFirstExtension/icon.png'
+  const fileList2 = [
+    "test/myFirstExtension/icon.png",
   ];
 
-  newCrx(opts).load(fileList).catch(function(err){
+  newCrx(opts).load(fileList2).catch((err) => {
     t.ok(err);
   });
 
-  newCrx(opts).load(Buffer.from('')).catch(function(err){
+  newCrx(opts).load(Buffer.from("")).catch((err) => {
     t.ok(err);
-  })
+  });
 };
 
-TESTS.pack = function(t, opts){
+TESTS.pack = function (t, opts) {
   t.plan(1);
 
-  var crx = newCrx(opts);
-  crx.pack().then(function(packageData){
+  const crx = newCrx(opts);
+  crx.pack().then((packageData) => {
     t.ok(packageData instanceof Buffer);
   })
-  .catch(t.error.bind(t));
+    .catch(t.error.bind(t));
 };
 
-TESTS.writeFile = function(t, opts){
+TESTS.writeFile = function (t, opts) {
   t.plan(1);
 
-  var crx = newCrx(opts);
+  const crx = newCrx(opts);
 
-  t.throws(() => crx.writeFile('/tmp/crx'));
+  t.throws(() => crx.writeFile("/tmp/crx"));
 };
 
-TESTS.ignoreFiles = function(t, opts){
+TESTS.ignoreFiles = function (t, opts) {
   t.plan(1);
 
-  var crx = newCrx(Object.assign({
-    ignore: ['*.png']
+  const crx = newCrx(Object.assign({
+    ignore: ["*.png"],
   }, opts));
 
-  crx.load().then(function(){
+  crx.load().then(() => {
     return crx.loadContents();
   })
-  .then(function(packageData){
-    var entries = new Zip(packageData)
-    .getEntries()
-    .map(function(entry){
-      return entry.entryName;
-    })
+    .then((packageData) => {
+      const entries = new Zip(packageData)
+        .getEntries()
+        .map((entry) => {
+          return entry.entryName;
+        });
 
-    t.deepEqual(entries, ['manifest.json']);
-  })
-  .catch(t.error.bind(t));
+      t.deepEqual(entries, ["manifest.json"]);
+    })
+    .catch(t.error.bind(t));
 };
 
-TESTS.loadContents = function(t, opts){
+TESTS.loadContents = function (t, opts) {
   t.plan(3);
 
-  newCrx(opts).loadContents().catch(function(err){
+  newCrx(opts).loadContents().catch((err) => {
     t.ok(err instanceof Error);
   });
 
-  var crx = newCrx(opts);
+  const crx = newCrx(opts);
 
-  crx.load().then(function(){
+  crx.load().then(() => {
     return crx.loadContents();
   })
-  .then(function(contentsBuffer){
-    t.ok(contentsBuffer instanceof Buffer);
+    .then((contentsBuffer) => {
+      t.ok(contentsBuffer instanceof Buffer);
 
-    return contentsBuffer;
-  })
-  .then(function(packageData){
-    var entries = new Zip(packageData)
-    .getEntries()
-    .map(function(entry){
-      return entry.entryName;
+      return contentsBuffer;
     })
-    .sort(function(a, b){
-      return a.localeCompare(b);
-    });
+    .then((packageData) => {
+      const entries = new Zip(packageData)
+        .getEntries()
+        .map((entry) => {
+          return entry.entryName;
+        })
+        .sort((a, b) => {
+          return a.localeCompare(b);
+        });
 
-    t.deepEqual(entries, ['icon.png', 'manifest.json']);
+      t.deepEqual(entries, ["icon.png", "manifest.json"]);
 
-    return packageData;
-  })
-  .catch(t.error.bind(t));
+      return packageData;
+    })
+    .catch(t.error.bind(t));
 };
 
-
-TESTS.generateUpdateXML = function(t, opts){
+TESTS.generateUpdateXML = function (t, opts) {
   t.plan(3);
 
-  t.throws(() => new ChromeExtension({}).generateUpdateXML(), 'No URL provided for update.xml');
+  t.throws(() => new ChromeExtension({}).generateUpdateXML(), "No URL provided for update.xml");
 
-  var crx = newCrx(opts);
-  var expected = crx.version === 2 ? updateXml2 : updateXml3;
+  const crx = newCrx(opts);
+  const expected = crx.version === 2 ? updateXml2 : updateXml3;
 
-  crx.pack().then(function(){
-    var xmlBuffer = crx.generateUpdateXML();
+  crx.pack().then(() => {
+    const xmlBuffer = crx.generateUpdateXML();
 
     t.equals(xmlBuffer.toString(), expected.toString());
   })
-  .catch(t.error.bind(t));
+    .catch(t.error.bind(t));
 
-  var crxCustom = newCrx(opts);
+  const crxCustom = newCrx(opts);
   crxCustom.load().then(() => {
-    crxCustom.manifest.minimum_chrome_version = '99.99.99-crxtest';
-    crxCustom.pack().then(function(){
-      var xmlBuffer = crxCustom.generateUpdateXML();
+    crxCustom.manifest.minimum_chrome_version = "99.99.99-crxtest";
+    crxCustom.pack().then(() => {
+      const xmlBuffer = crxCustom.generateUpdateXML();
 
       t.equals(xmlBuffer.toString(), updateXmlCustom.toString());
     })
-    .catch(t.error.bind(t));
+      .catch(t.error.bind(t));
   });
 };
 
-TESTS.generatePublicKey = function(t, opts) {
+TESTS.generatePublicKey = function (t, opts) {
   t.plan(2);
 
-  var crx = newCrx(opts);
+  const crx = newCrx(opts);
   crx.privateKey = null;
 
-  crx.generatePublicKey().catch(function(err){
+  crx.generatePublicKey().catch((err) => {
     t.ok(err);
   });
 
-  newCrx(opts).generatePublicKey().then(function(publicKey){
+  newCrx(opts).generatePublicKey().then((publicKey) => {
     t.equals(publicKey.length, 162);
   });
 };
 
-TESTS.generateAppId = function(t, opts) {
+TESTS.generateAppId = function (t, opts) {
   t.plan(4);
 
-  t.throws(function() { newCrx(opts).generateAppId(); }, /Public key is neither set, nor given/);
+  t.throws(() => {
+    newCrx(opts).generateAppId();
+  }, /Public key is neither set, nor given/);
 
-  var crx = newCrx(opts)
+  const crx = newCrx(opts);
 
   // from Public Key
-  crx.generatePublicKey().then(function(publicKey){
-    t.equals(crx.generateAppId(publicKey), 'eoilidhiokfphdhpmhoaengdkehanjif');
+  crx.generatePublicKey().then((publicKey) => {
+    t.equals(crx.generateAppId(publicKey), "eoilidhiokfphdhpmhoaengdkehanjif");
   })
-  .catch(t.error.bind(t));
+    .catch(t.error.bind(t));
 
   // from Linux Path
-  t.equals(crx.generateAppId('/usr/local/extension'), 'ioglhmppkolgcgoonkfdbjkcedfjhbcd');
+  t.equals(crx.generateAppId("/usr/local/extension"), "ioglhmppkolgcgoonkfdbjkcedfjhbcd");
 
   // from Windows Path
-  t.equals(crx.generateAppId('c:\\a'), 'igchicfaapedlfgmepccnpolhajaphik');
+  t.equals(crx.generateAppId("c:\\a"), "igchicfaapedlfgmepccnpolhajaphik");
 };
 
 TESTS["end to end"] = function (t, opts) {
-  var crx = newCrx(opts);
+  const crx = newCrx(opts);
 
   crx.load()
-    .then(function(crx) {
+    .then((crx) => {
       return crx.pack();
     })
-    .then(function(crxBuffer) {
-      fs.writeFile('build.crx', crxBuffer, t.error);
-      fs.writeFile('update.xml', crx.generateUpdateXML(), t.error);
+    .then((crxBuffer) => {
+      fs.writeFile("build.crx", crxBuffer, t.error);
+      fs.writeFile("update.xml", crx.generateUpdateXML(), t.error);
     })
     .then(t.end);
 };
@@ -223,12 +223,12 @@ TESTS["end to end"] = function (t, opts) {
 // Each value is an options obect to be passed to test implementation.
 const TEST_OPTIONS = {
   "": undefined, // use defaults
-  v2: {version: 2},
-  v3: {version: 3}
+  "v2": { version: 2 },
+  "v3": { version: 3 },
 };
 
 // Run whole list of tests for each of the configurations
-Reflect.ownKeys(TEST_OPTIONS).forEach(key => {
+Reflect.ownKeys(TEST_OPTIONS).forEach((key) => {
   for (const name in TESTS) {
     test(`${key}: ${name}`, t => TESTS[name](t, TEST_OPTIONS[key]));
   }
