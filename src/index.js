@@ -16,6 +16,7 @@ const DEFAULTS = {
   codebase: null,
   path: null,
   src: "**",
+  ignore: ["*.crx"],
   version: 3,
 };
 
@@ -144,7 +145,7 @@ class ChromeExtension {
         .glob(selfie.src, {
           cwd: selfie.path,
           matchBase: true,
-          ignore: ["*.pem", ".git", "*.crx"],
+          ignore: ["*.pem", ".git"].concat(selfie.ignore),
         })
         .finalize();
     });
