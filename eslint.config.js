@@ -16,6 +16,7 @@ export default defineConfig([
     quotes: "double",
     semi: true,
     jsx: false,
+    quoteProps: "as-needed",
   }),
   {
     files: ["**/*.js"],
