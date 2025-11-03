@@ -2,7 +2,6 @@
 
 import path, { resolve, join } from "node:path";
 import fs from "node:fs";
-import { writeFile, readFile } from "node:fs/promises";
 import rsa from "node-rsa";
 
 import { program } from "commander";
@@ -57,12 +56,12 @@ program.parse(process.argv);
  * @param {Object} opts
  * @returns {Promise}
  */
-async function generateKeyFile(keyPath, opts) {
+function generateKeyFile(keyPath, opts) {
   // Chromium (tested on 72.0.3626.109) which generates CRX v3 files requires pkcs8 key
   const pkcs = `pkcs${opts.crxVersion === 2 ? "1" : "8"}-private-pem`;
 
   const keyVal = new rsa({ b: 2048 }).exportKey(pkcs);
-  return await writeFile(keyPath, keyVal);
+  return fs.writeFileSync(keyPath, keyVal);
 }
 
 function keygen(dir, options) {
@@ -110,13 +109,13 @@ function pack(dir, options) {
     version: options.crxVersion || 3,
   });
 
-  readFile(keyPath)
+  fs.promises.readFile(keyPath)
     .then(null, async (err) => {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
         await generateKeyFile(keyPath, options);
         process.stderr.write(`Created new private key at: ${keyPath}.\n`);
-        return await readFile(keyPath);
+        return fs.readFileSync(keyPath);
       }
       else {
         throw err;
