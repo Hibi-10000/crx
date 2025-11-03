@@ -5,6 +5,7 @@ import { join } from "node:path";
 import test from "tape";
 import Zip from "adm-zip";
 import ChromeExtension from "../src/index.js";
+
 const privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
 const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));
 const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
@@ -21,14 +22,14 @@ function newCrx(opts) {
 
 const TESTS = {};
 
-TESTS.ChromeExtension = function (t, opts) {
+TESTS.ChromeExtension = (t, opts) => {
   t.plan(2);
 
   t.throws(() => ChromeExtension({}));
   t.ok(newCrx(opts));
 };
 
-TESTS.load = function (t, opts) {
+TESTS.load = (t, opts) => {
   t.plan(6);
 
   newCrx(opts).load().then(t.pass);
@@ -66,7 +67,7 @@ TESTS.load = function (t, opts) {
   });
 };
 
-TESTS.pack = function (t, opts) {
+TESTS.pack = (t, opts) => {
   t.plan(1);
 
   const crx = newCrx(opts);
@@ -76,7 +77,7 @@ TESTS.pack = function (t, opts) {
     .catch(t.error.bind(t));
 };
 
-TESTS.writeFile = function (t, opts) {
+TESTS.writeFile = (t, opts) => {
   t.plan(1);
 
   const crx = newCrx(opts);
@@ -84,7 +85,7 @@ TESTS.writeFile = function (t, opts) {
   t.throws(() => crx.writeFile("/tmp/crx"));
 };
 
-TESTS.ignoreFiles = function (t, opts) {
+TESTS.ignoreFiles = (t, opts) => {
   t.plan(1);
 
   const crx = newCrx(Object.assign({
@@ -106,7 +107,7 @@ TESTS.ignoreFiles = function (t, opts) {
     .catch(t.error.bind(t));
 };
 
-TESTS.loadContents = function (t, opts) {
+TESTS.loadContents = (t, opts) => {
   t.plan(3);
 
   newCrx(opts).loadContents().catch((err) => {
@@ -140,7 +141,7 @@ TESTS.loadContents = function (t, opts) {
     .catch(t.error.bind(t));
 };
 
-TESTS.generateUpdateXML = function (t, opts) {
+TESTS.generateUpdateXML = (t, opts) => {
   t.plan(3);
 
   t.throws(() => new ChromeExtension({}).generateUpdateXML(), "No URL provided for update.xml");
@@ -167,7 +168,7 @@ TESTS.generateUpdateXML = function (t, opts) {
   });
 };
 
-TESTS.generatePublicKey = function (t, opts) {
+TESTS.generatePublicKey = (t, opts) => {
   t.plan(2);
 
   const crx = newCrx(opts);
@@ -182,7 +183,7 @@ TESTS.generatePublicKey = function (t, opts) {
   });
 };
 
-TESTS.generateAppId = function (t, opts) {
+TESTS.generateAppId = (t, opts) => {
   t.plan(4);
 
   t.throws(() => {
@@ -204,7 +205,7 @@ TESTS.generateAppId = function (t, opts) {
   t.equals(crx.generateAppId("c:\\a"), "igchicfaapedlfgmepccnpolhajaphik");
 };
 
-TESTS["end to end"] = function (t, opts) {
+TESTS["end to end"] = (t, opts) => {
   const crx = newCrx(opts);
 
   crx.load()
