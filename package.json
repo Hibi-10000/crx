@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "archiver": "^4.0.2",
-    "commander": "^2.20.0",
+    "commander": "^14.0.2",
     "node-rsa": "^1.0.5",
     "pbf": "^4.0.1"
   },

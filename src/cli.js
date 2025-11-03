@@ -5,7 +5,7 @@ import fs from "node:fs";
 import { writeFile, readFile } from "node:fs/promises";
 import rsa from "node-rsa";
 
-import program from "commander";
+import { program } from "commander";
 import ChromeExtension from "./index.js";
 
 const pkg = JSON.parse(fs.readFileSync("../package.json", "utf8"));
@@ -67,42 +67,42 @@ function generateKeyFile(keyPath, opts) {
   ;
 }
 
-function keygen(dir, program) {
+function keygen(dir, options) {
   dir = dir ? resolve(cwd, dir) : cwd;
 
   const keyPath = join(dir, "key.pem");
 
   fs.exists(keyPath, function (exists) {
-    if (exists && !program.force) {
+    if (exists && !options.force) {
       throw new Error("key.pem already exists in the given location.");
     }
 
-    generateKeyFile(keyPath, program);
+    generateKeyFile(keyPath, options);
   });
 }
 
-function pack(dir, program) {
+function pack(dir, options) {
   const input = dir ? resolve(cwd, dir) : cwd;
-  const keyPath = program.privateKey
-    ? resolve(cwd, program.privateKey)
+  const keyPath = options.privateKey
+    ? resolve(cwd, options.privateKey)
     : join(input, "..", "key.pem");
   let output;
 
-  if (program.output) {
-    if (path.extname(program.output) !== ".crx") {
+  if (options.output) {
+    if (path.extname(options.output) !== ".crx") {
       throw new Error(
         "-o file is expected to have a `.crx` suffix: ["
-        + program.output
+        + options.output
         + "] was given.",
       );
     }
   }
 
-  if (program.zipOutput) {
-    if (path.extname(program.zipOutput) !== ".zip") {
+  if (options.zipOutput) {
+    if (path.extname(options.zipOutput) !== ".zip") {
       throw new Error(
         "--zip-output file is expected to have a `.zip` suffix: ["
-        + program.zipOutput
+        + options.zipOutput
         + "] was given.",
       );
     }
@@ -110,15 +110,15 @@ function pack(dir, program) {
 
   const crx = new ChromeExtension({
     rootDirectory: input,
-    maxBuffer: program.maxBuffer,
-    version: program.crxVersion || 3,
+    maxBuffer: options.maxBuffer,
+    version: options.crxVersion || 3,
   });
 
   readFile(keyPath)
     .then(null, function (err) {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
-        return generateKeyFile(keyPath, program).then(() => {
+        return generateKeyFile(keyPath, options).then(() => {
           process.stderr.write("Created new private key at: " + keyPath + ".\n");
           return readFile(keyPath);
         });
@@ -135,8 +135,8 @@ function pack(dir, program) {
         .load()
         .then(() => crx.loadContents())
         .then(function (fileBuffer) {
-          if (program.zipOutput) {
-            const outFile = resolve(cwd, program.zipOutput);
+          if (options.zipOutput) {
+            const outFile = resolve(cwd, options.zipOutput);
 
             fs.createWriteStream(outFile).end(fileBuffer);
           }
@@ -145,11 +145,11 @@ function pack(dir, program) {
           }
         })
         .then(function (crxBuffer) {
-          if (program.zipOutput) {
+          if (options.zipOutput) {
             return;
           }
-          else if (program.output) {
-            output = program.output;
+          else if (options.output) {
+            output = options.output;
           }
           else {
             output = path.basename(cwd) + ".crx";
