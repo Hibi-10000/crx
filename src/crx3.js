@@ -96,7 +96,7 @@ const kSignatureContext = Buffer.from("CRX3 SignedData\x00", "utf8");
 function getCrxId(publicKey) {
   const hash = crypto.createHash("sha256");
   hash.update(publicKey);
-  return hash.digest().slice(0, CRX_ID_SIZE);
+  return hash.digest().subarray(0, CRX_ID_SIZE);
 }
 
 /**
