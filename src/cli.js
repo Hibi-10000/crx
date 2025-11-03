@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import path, { resolve, join } from "node:path";
+import path from "node:path";
 import fs from "node:fs";
 import rsa from "node-rsa";
 
@@ -65,9 +65,9 @@ function generateKeyFile(keyPath, opts) {
 }
 
 function keygen(dir, options) {
-  dir = dir ? resolve(cwd, dir) : cwd;
+  dir = dir ? path.resolve(cwd, dir) : cwd;
 
-  const keyPath = join(dir, "key.pem");
+  const keyPath = path.join(dir, "key.pem");
 
   try {
     fs.accessSync(keyPath);
@@ -81,10 +81,10 @@ function keygen(dir, options) {
 }
 
 function pack(dir, options) {
-  const input = dir ? resolve(cwd, dir) : cwd;
+  const input = dir ? path.resolve(cwd, dir) : cwd;
   const keyPath = options.privateKey
-    ? resolve(cwd, options.privateKey)
-    : join(input, "..", "key.pem");
+    ? path.resolve(cwd, options.privateKey)
+    : path.join(input, "..", "key.pem");
   let output;
 
   if (options.output) {
@@ -130,7 +130,7 @@ function pack(dir, options) {
         .then(() => crx.loadContents())
         .then((fileBuffer) => {
           if (options.zipOutput) {
-            const outFile = resolve(cwd, options.zipOutput);
+            const outFile = path.resolve(cwd, options.zipOutput);
 
             fs.createWriteStream(outFile).end(fileBuffer);
           }
@@ -149,7 +149,7 @@ function pack(dir, options) {
             output = `${path.basename(cwd)}.crx`;
           }
 
-          const outFile = resolve(cwd, output);
+          const outFile = path.resolve(cwd, output);
           if (outFile) {
             fs.createWriteStream(outFile).end(crxBuffer);
           }

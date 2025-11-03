@@ -1,7 +1,7 @@
 "use strict";
 
+import crypto from "node:crypto";
 import PBf from "pbf";
-import crypto from "crypto";
 import * as crx from "./crx3.pb.js";
 
 /**
