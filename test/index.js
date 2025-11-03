@@ -11,6 +11,7 @@ const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "up
 const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
 const updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
 
+/** @type {(opts?: { version: number }) => ChromeExtension} */
 function newCrx(opts) {
   return new ChromeExtension(Object.assign({
     privateKey: privateKey,
@@ -20,6 +21,7 @@ function newCrx(opts) {
   }, opts));
 }
 
+/** @type {Record<string, (t: import("tape").Test, opts?: { version: number }) => Promise<void>>} */
 const TESTS = {
   ChromeExtension: (t, opts) => {
     t.plan(2);
@@ -211,9 +213,9 @@ const TESTS = {
       .then((crx) => {
         return crx.pack();
       })
-      .then((crxBuffer) => {
-        fs.writeFile("build.crx", crxBuffer, t.error);
-        fs.writeFile("update.xml", crx.generateUpdateXML(), t.error);
+      .then(async (crxBuffer) => {
+        await fs.promises.writeFile("build.crx", crxBuffer);
+        await fs.promises.writeFile("update.xml", crx.generateUpdateXML());
       })
       .then(t.end);
   },
@@ -231,6 +233,6 @@ const TEST_OPTIONS = {
 // Run whole list of tests for each of the configurations
 Reflect.ownKeys(TEST_OPTIONS).forEach((key) => {
   for (const name in TESTS) {
-    test(`${key}: ${name}`, t => TESTS[name](t, TEST_OPTIONS[key]));
+    test(`${key === "" ? "default" : key}: ${name}`, t => TESTS[name](t, TEST_OPTIONS[key]));
   }
 });
