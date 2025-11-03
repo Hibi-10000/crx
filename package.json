@@ -21,8 +21,7 @@
   "scripts": {
     "lint": "eslint .",
     "format": "eslint --fix .",
-    "test": "nyc tape ./test/*.js",
-    "posttest": "eslint src/*.js"
+    "test": "nyc tape ./test/*.js"
   },
   "nyc": {
     "functions": 100,

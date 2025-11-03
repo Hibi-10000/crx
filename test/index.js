@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { join } from "node:path";
 import test from "tape";
 import Zip from "adm-zip";
-import ChromeExtension from "../index.js";
+import ChromeExtension from "../src/index.js";
 var privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
 var updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));
 var updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
