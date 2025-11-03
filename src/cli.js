@@ -113,7 +113,7 @@ function pack(dir, options) {
   });
 
   readFile(keyPath)
-    .then(null, function (err) {
+    .then(null, (err) => {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
         return generateKeyFile(keyPath, options).then(() => {
@@ -125,14 +125,14 @@ function pack(dir, options) {
         throw err;
       }
     })
-    .then(function (key) {
+    .then((key) => {
       crx.privateKey = key;
     })
-    .then(function () {
+    .then(() => {
       crx
         .load()
         .then(() => crx.loadContents())
-        .then(function (fileBuffer) {
+        .then((fileBuffer) => {
           if (options.zipOutput) {
             const outFile = resolve(cwd, options.zipOutput);
 
@@ -142,7 +142,7 @@ function pack(dir, options) {
             return crx.pack(fileBuffer);
           }
         })
-        .then(function (crxBuffer) {
+        .then((crxBuffer) => {
           if (options.zipOutput) {
             return;
           }

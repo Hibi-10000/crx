@@ -3,7 +3,7 @@
 import path from "node:path";
 
 export default function resolve(pathOrFiles) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // legacy and original mode
     if (typeof pathOrFiles === "string") {
       return resolve({
@@ -16,7 +16,7 @@ export default function resolve(pathOrFiles) {
     else if (Array.isArray(pathOrFiles)) {
       let manifestFile = "";
 
-      pathOrFiles.some(function (f) {
+      pathOrFiles.some((f) => {
         if (/(^|\/)manifest.json$/.test(f)) {
           manifestFile = f;
           return true;
@@ -35,7 +35,7 @@ export default function resolve(pathOrFiles) {
         path: path.resolve(manifestDir),
         src: `{${
           pathOrFiles
-            .map(function (f) {
+            .map((f) => {
               return path.relative(manifestDir, f);
             })
             .join(",")

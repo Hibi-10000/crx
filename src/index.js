@@ -103,7 +103,7 @@ class ChromeExtension {
   generatePublicKey() {
     const privateKey = this.privateKey;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       if (!privateKey) {
         return reject(
           "Impossible to generate a public key: privateKey option has not been defined or is empty.",
@@ -125,7 +125,7 @@ class ChromeExtension {
   loadContents() {
     const selfie = this;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       const archive = archiver("zip", { zlib: { level: 9 } });
       let contents = Buffer.from("");
 
@@ -144,11 +144,11 @@ class ChromeExtension {
 
         @see https://github.com/oncletom/crx/issues/61
       */
-      archive.on("data", function (buf) {
+      archive.on("data", (buf) => {
         contents = Buffer.concat([contents, buf]);
       });
 
-      archive.on("finish", function () {
+      archive.on("finish", () => {
         resolve(contents);
       });
 
