@@ -72,13 +72,15 @@ function keygen(dir, options) {
 
   const keyPath = join(dir, "key.pem");
 
-  fs.exists(keyPath, function (exists) {
-    if (exists && !options.force) {
+  try {
+    fs.accessSync(keyPath);
+    if (!options.force) {
       throw new Error("key.pem already exists in the given location.");
     }
-
+  }
+  catch (_err) {
     generateKeyFile(keyPath, options);
-  });
+  }
 }
 
 function pack(dir, options) {

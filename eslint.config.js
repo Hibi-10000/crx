@@ -33,6 +33,7 @@ export default defineConfig([
       "@stylistic/spaced-comment": 0,
       "no-var": "error",
       "prefer-const": "error",
+      "no-unused-vars": ["warn", { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
     },
   },
 ]);
