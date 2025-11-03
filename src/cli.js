@@ -59,7 +59,7 @@ program.parse(process.argv);
  */
 function generateKeyFile(keyPath, opts) {
   // Chromium (tested on 72.0.3626.109) which generates CRX v3 files requires pkcs8 key
-  const pkcs = "pkcs" + (opts.crxVersion === 2 ? "1" : "8") + "-private-pem";
+  const pkcs = `pkcs${opts.crxVersion === 2 ? "1" : "8"}-private-pem`;
 
   return Promise.resolve(new rsa({ b: 2048 }))
     .then(key => key.exportKey(pkcs))
@@ -91,9 +91,7 @@ function pack(dir, options) {
   if (options.output) {
     if (path.extname(options.output) !== ".crx") {
       throw new Error(
-        "-o file is expected to have a `.crx` suffix: ["
-        + options.output
-        + "] was given.",
+        `-o file is expected to have a \`.crx\` suffix: [${options.output}] was given.`,
       );
     }
   }
@@ -101,9 +99,7 @@ function pack(dir, options) {
   if (options.zipOutput) {
     if (path.extname(options.zipOutput) !== ".zip") {
       throw new Error(
-        "--zip-output file is expected to have a `.zip` suffix: ["
-        + options.zipOutput
-        + "] was given.",
+        `--zip-output file is expected to have a \`.zip\` suffix: [${options.zipOutput}] was given.`,
       );
     }
   }
@@ -119,7 +115,7 @@ function pack(dir, options) {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
         return generateKeyFile(keyPath, options).then(() => {
-          process.stderr.write("Created new private key at: " + keyPath + ".\n");
+          process.stderr.write(`Created new private key at: ${keyPath}.\n`);
           return readFile(keyPath);
         });
       }
@@ -152,7 +148,7 @@ function pack(dir, options) {
             output = options.output;
           }
           else {
-            output = path.basename(cwd) + ".crx";
+            output = `${path.basename(cwd)}.crx`;
           }
 
           const outFile = resolve(cwd, output);

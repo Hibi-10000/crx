@@ -33,14 +33,13 @@ export default function resolve(pathOrFiles) {
 
       return resolve({
         path: path.resolve(manifestDir),
-        src:
-          "{"
-          + pathOrFiles
+        src: `{${
+          pathOrFiles
             .map(function (f) {
               return path.relative(manifestDir, f);
             })
             .join(",")
-            + "}",
+        }}`,
       });
     }
 
