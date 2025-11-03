@@ -45,18 +45,16 @@ class ChromeExtension {
       return this.load().then(this.pack.bind(this, contentsBuffer));
     }
 
-    const selfie = this;
-
     const publicKey = await this.generatePublicKey();
-    const contents = contentsBuffer || await selfie.loadContents();
+    const contents = contentsBuffer || await this.loadContents();
 
-    selfie.publicKey = publicKey;
+    this.publicKey = publicKey;
 
-    if (selfie.version === 2) {
-      return crx2(selfie.privateKey, publicKey, contents);
+    if (this.version === 2) {
+      return crx2(this.privateKey, publicKey, contents);
     }
 
-    return crx3(selfie.privateKey, publicKey, contents);
+    return crx3(this.privateKey, publicKey, contents);
   }
 
   /**
@@ -66,18 +64,16 @@ class ChromeExtension {
    * @returns {Promise}
    */
   async load(path) {
-    const selfie = this;
+    const metadata = await resolve(path || this.rootDirectory);
+    this.path = metadata.path;
+    this.src = metadata.src;
 
-    const metadata = await resolve(path || selfie.rootDirectory);
-    selfie.path = metadata.path;
-    selfie.src = metadata.src;
+    const manifestPath = join(this.path, "manifest.json");
 
-    const manifestPath = join(selfie.path, "manifest.json");
+    this.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    this.loaded = true;
 
-    selfie.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-    selfie.loaded = true;
-
-    return selfie;
+    return this;
   }
 
   /**
