@@ -40,29 +40,23 @@ class ChromeExtension {
    * });
    *
    */
-  pack(contentsBuffer) {
+  async pack(contentsBuffer) {
     if (!this.loaded) {
       return this.load().then(this.pack.bind(this, contentsBuffer));
     }
 
     const selfie = this;
-    const packP = [
-      this.generatePublicKey(),
-      contentsBuffer || selfie.loadContents(),
-    ];
 
-    return Promise.all(packP).then(function (outputs) {
-      const publicKey = outputs[0];
-      const contents = outputs[1];
+    const publicKey = await this.generatePublicKey();
+    const contents = contentsBuffer || await selfie.loadContents();
 
-      selfie.publicKey = publicKey;
+    selfie.publicKey = publicKey;
 
-      if (selfie.version === 2) {
-        return crx2(selfie.privateKey, publicKey, contents);
-      }
+    if (selfie.version === 2) {
+      return crx2(selfie.privateKey, publicKey, contents);
+    }
 
-      return crx3(selfie.privateKey, publicKey, contents);
-    });
+    return crx3(selfie.privateKey, publicKey, contents);
   }
 
   /**
@@ -71,20 +65,19 @@ class ChromeExtension {
    * @param {string=} path
    * @returns {Promise}
    */
-  load(path) {
+  async load(path) {
     const selfie = this;
 
-    return resolve(path || selfie.rootDirectory).then(function (metadata) {
-      selfie.path = metadata.path;
-      selfie.src = metadata.src;
+    const metadata = await resolve(path || selfie.rootDirectory);
+    selfie.path = metadata.path;
+    selfie.src = metadata.src;
 
-      const manifestPath = join(selfie.path, "manifest.json");
+    const manifestPath = join(selfie.path, "manifest.json");
 
-      selfie.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-      selfie.loaded = true;
+    selfie.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    selfie.loaded = true;
 
-      return selfie;
-    });
+    return selfie;
   }
 
   /**
