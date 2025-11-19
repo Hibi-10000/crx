@@ -4,9 +4,10 @@ import test from "node:test";
 
 import { TESTS, TEST_OPTIONS } from "./index.js";
 
-/** @type {(t: import("node:test").TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void) => import("tape").Test} */
+/** @type {(t: import("node:test").TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void) => import("tape").Test & { isPlanned: () => boolean }} */
 const tape_Test = (t, resolve, reject) => {
   let planned = false;
+  // @ts-expect-error
   return {
     isPlanned: () => planned,
     plan: () => {
