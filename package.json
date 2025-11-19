@@ -15,7 +15,7 @@
     "crx": "./src/cli.js"
   },
   "engines": {
-    "node": ">=10",
+    "node": ">=18",
     "pnpm": ">=10.16"
   },
   "scripts": {

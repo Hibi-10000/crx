@@ -24,7 +24,7 @@ export default defineConfig([
       globals: {
         ...globals.nodeBuiltin,
       },
-      ecmaVersion: 2018,
+      ecmaVersion: 2022,
     },
     extends: [
       eslint.configs.recommended,
@@ -35,12 +35,6 @@ export default defineConfig([
       "prefer-const": "error",
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
       "prefer-arrow-callback": "error",
-    },
-  },
-  {
-    files: ["test/**/*.js"],
-    languageOptions: {
-      ecmaVersion: 2020,
     },
   },
 ]);
