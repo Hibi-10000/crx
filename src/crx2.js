@@ -45,11 +45,8 @@ export default function generatePackage(privateKey, publicKey, contents) {
  * @returns {Buffer}
  */
 function generateSignature(privateKey, contents) {
-  return Buffer.from(
-    crypto
-      .createSign("sha1")
-      .update(contents)
-      .sign(privateKey),
-    "binary",
-  );
+  return crypto
+    .createSign("sha1")
+    .update(contents)
+    .sign(privateKey);
 }

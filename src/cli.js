@@ -82,7 +82,7 @@ function generateKeyFile(keyPath, opts) {
       format: "pem",
     },
   });
-  return fs.writeFileSync(keyPath, privateKey);
+  return fs.promises.writeFile(keyPath, privateKey);
 }
 
 /**
