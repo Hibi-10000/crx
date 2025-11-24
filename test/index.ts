@@ -227,7 +227,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 // Each key is the test name prefix.
 // Each value is an options obect to be passed to test implementation.
 export const TEST_OPTIONS = {
-  "": undefined as undefined, // use defaults
-  v2: { version: 2 as 2 },
-  v3: { version: 3 as 3 },
-};
+  "": undefined, // use defaults
+  v2: { version: 2 },
+  v3: { version: 3 },
+} as const;
