@@ -8,8 +8,8 @@ import { TESTS, TEST_OPTIONS } from "./index.ts";
 const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void): Test => {
   let plan = -1;
   let current = 0;
-  const countAssert = (func) => {
-    return (...args) => {
+  const countAssert = (func: Function) => {
+    return (...args: any[]) => {
       func.apply(null, args);
       current++;
       if (plan !== -1 && plan === current) {
@@ -32,7 +32,7 @@ const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject
       }
     },
     ok: countAssert(t.assert.ok),
-    pass: countAssert((msg) => t.assert.ok(true, msg)),
+    pass: countAssert((msg: string | undefined) => t.assert.ok(true, msg)),
     error: countAssert(t.assert.fail),
     deepEqual: countAssert(t.assert.deepEqual),
     equals: countAssert(t.assert.equal),
