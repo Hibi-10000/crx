@@ -29,6 +29,13 @@
     "commander": "^14.0.2",
     "pbf": "^4.0.1"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.11",
+      "onFail": "download"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@stylistic/eslint-plugin": "^5.5.0",
