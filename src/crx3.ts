@@ -10,13 +10,9 @@ import * as crx from "./crx3.pb.js";
  * Based on `crx_creator` from Chromium project.
  *
  * @see {@link https://github.com/chromium/chromium/blob/master/components/crx_file/crx_creator.cc}
- * @param {Buffer} privateKey
- * @param {Buffer} publicKey
- * @param {Buffer} contents
- * @returns {Buffer}
  */
-export default function generatePackage(privateKey, publicKey, contents) {
-  let pb;
+export default function generatePackage(privateKey: Buffer, publicKey: Buffer, contents: Buffer): Buffer {
+  let pb: PBf;
 
   pb = new PBf();
   crx.writeSignedData({
@@ -55,45 +51,37 @@ export default function generatePackage(privateKey, publicKey, contents) {
 
 /**
  * CRX IDs are 16 bytes long
- * @constant
  */
 const CRX_ID_SIZE = 16;
 
 /**
  * CRX3 uses 32bit numbers in various places,
  * so let's prepare size constant for that.
- * @constant
  */
 const SIZE_BYTES = 4;
 
 /**
  * Used for file format.
  * @see {@link https://github.com/chromium/chromium/blob/master/components/crx_file/crx3.proto}
- * @constant
  */
 const kSignature = Buffer.from("Cr24", "utf8");
 
 /**
  * Used for file format.
  * @see {@link https://github.com/chromium/chromium/blob/master/components/crx_file/crx3.proto}
- * @constant
  */
 const kVersion = Buffer.from([3, 0, 0, 0]);
 
 /**
  * Used for generating package signatures.
  * @see {@link https://github.com/chromium/chromium/blob/master/components/crx_file/crx3.proto}
- * @constant
  */
 const kSignatureContext = Buffer.from("CRX3 SignedData\x00", "utf8");
 
 /**
  * Given public key data, returns CRX ID.
- *
- * @param {Buffer} publicKey
- * @returns {Buffer}
  */
-function getCrxId(publicKey) {
+function getCrxId(publicKey: Buffer): Buffer {
   const hash = crypto.createHash("sha256");
   hash.update(publicKey);
   return hash.digest().subarray(0, CRX_ID_SIZE);
@@ -101,13 +89,8 @@ function getCrxId(publicKey) {
 
 /**
 * Generates and returns a signature.
-*
-* @param {crypto.KeyLike} privateKey
-* @param {Uint8Array} signedHeaderData
-* @param {Buffer} contents
-* @returns {Buffer}
 */
-function generateSignature(privateKey, signedHeaderData, contents) {
+function generateSignature(privateKey: crypto.KeyLike, signedHeaderData: Uint8Array, contents: Buffer): Buffer {
   const hash = crypto.createSign("sha256");
 
   // Magic constant
