@@ -8,75 +8,51 @@ import resolve from "./resolver.js";
 import crx2 from "./crx2.js";
 import crx3 from "./crx3.js";
 
-/** @typedef { import("./resolver").PathMetadata } PathMetadata */
-
 /** @enum {number} CrxVersion */
 export const CrxVersion = {
   VERSION_2: 2,
   VERSION_3: 3,
 };
 
-/**
- * @typedef {Object} BrowserManifest
- * @property {string} minimum_chrome_version
- * @property {string} version
- */
+interface BrowserManifest {
+  minimum_chrome_version: string;
+  version: string;
+}
 
-/**
- * @typedef {Object} BrowserExtensionOptions
- */
+type BrowserExtensionOptions = Object;
 
-/**
- * @class BrowserExtension
- */
 class ChromeExtension {
-  /**
-   * @constructor
-   * @param {BrowserExtensionOptions} attrs
-   */
-  constructor(attrs) {
-    /** @type {string | null} */
+  appId: string | null;
+  rootDirectory: string;
+  //@ts-expect-error
+  publicKey: Buffer;
+  //@ts-expect-error
+  privateKey: Buffer;
+  codebase: string | null;
+  //@ts-expect-error
+  path: string;
+  src: string;
+  ignore: Array<string>;
+  version: number;
+  loaded: boolean;
+  //@ts-expect-error
+  manifest: BrowserManifest;
+
+  constructor(attrs: BrowserExtensionOptions) {
     this.appId = null;
-
-    /** @type {string} */
     this.rootDirectory = "";
-
-    /** @type {Buffer} */
-    this.publicKey;
-
-    /** @type {Buffer} */
-    this.privateKey;
-
-    /** @type {string | null} */
     this.codebase = null;
-
-    /** @type {string} */
-    this.path;
-
-    /** @type {string} */
     this.src = "**";
-
-    /** @type {Array.<string>} */
     this.ignore = ["*.crx"];
-
-    /** @type {CrxVersion} */
     this.version = CrxVersion.VERSION_3;
-
     // Setup defaults
     Object.assign(this, attrs);
-
-    /** @type {boolean} */
     this.loaded = false;
-
-    /** @type {BrowserManifest} */
-    this.manifest;
   }
 
   /**
    * Packs the content of the extension in a crx file.
    *
-   * @param {Buffer=} contentsBuffer
-   * @returns {Promise<Buffer>}
    * @example
    *
    * crx.pack().then(function(crxContent){
@@ -84,7 +60,7 @@ class ChromeExtension {
    * });
    *
    */
-  async pack(contentsBuffer) {
+  async pack(contentsBuffer?: Buffer): Promise<Buffer> {
     if (!this.loaded) {
       return this.load().then(this.pack.bind(this, contentsBuffer));
     }
@@ -103,11 +79,8 @@ class ChromeExtension {
 
   /**
    * Loads extension manifest and copies its content to a workable path.
-   *
-   * @param {string | string[]} [path]
-   * @returns {Promise<ChromeExtension>}
    */
-  async load(path) {
+  async load(path?: string | string[]): Promise<ChromeExtension> {
     const metadata = await resolve(path || this.rootDirectory);
     this.path = metadata.path;
     this.src = metadata.src;
@@ -126,14 +99,14 @@ class ChromeExtension {
    * BC BREAK `this.publicKey` is not stored anymore (since 1.0.0)
    * BC BREAK callback parameter has been removed in favor to the promise interface.
    *
-   * @returns {Promise<Buffer>} Resolves to {Buffer} containing the public key
+   * @returns Resolves to {Buffer} containing the public key
    * @example
    *
    * crx.generatePublicKey(function(publicKey){
    *   // do something with publicKey
    * });
    */
-  generatePublicKey() {
+  generatePublicKey(): Promise<Buffer> {
     const privateKey = this.privateKey;
 
     return new Promise((resolve, reject) => {
@@ -150,12 +123,9 @@ class ChromeExtension {
   }
 
   /**
-   *
    * BC BREAK `this.contents` is not stored anymore (since 1.0.0)
-   *
-   * @returns {Promise<Buffer>}
    */
-  loadContents() {
+  loadContents(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const archive = archiver("zip", { zlib: { level: 9 } });
       let contents = Buffer.from("");
@@ -200,10 +170,9 @@ class ChromeExtension {
    * BC BREAK `this.appId` is not stored anymore (since 1.0.0)
    * BC BREAK introduced `publicKey` parameter as it is not stored any more since 2.0.0
    *
-   * @param {Buffer|string} [keyOrPath] the public key to use to generate the app ID
-   * @returns {string}
+   * @param keyOrPath the public key to use to generate the app ID
    */
-  generateAppId(keyOrPath) {
+  generateAppId(keyOrPath?: Buffer | string): string {
     keyOrPath = keyOrPath || this.publicKey;
 
     if (typeof keyOrPath !== "string" && !(keyOrPath instanceof Buffer)) {
@@ -246,9 +215,8 @@ class ChromeExtension {
    * [Chrome Extensions APIs]{@link https://developer.chrome.com/extensions/api_index}
    * [Chrome verions]{@link https://en.wikipedia.org/wiki/Google_Chrome_version_history}
    * [Chromium switches to CRX3]{@link https://chromium.googlesource.com/chromium/src.git/+/b8bc9f99ef4ad6223dfdcafd924051561c05ac75}
-   * @returns {Buffer}
    */
-  generateUpdateXML() {
+  generateUpdateXML(): Buffer {
     if (!this.codebase) {
       throw new Error("No URL provided for update.xml.");
     }
