@@ -32,7 +32,7 @@ const tape_Test = (t, resolve, reject) => {
       }
     },
     ok: countAssert(t.assert.ok),
-    pass: countAssert(msg => t.assert.ok(true, msg)),
+    pass: countAssert((msg) => t.assert.ok(true, msg)),
     error: countAssert(t.assert.fail),
     deepEqual: countAssert(t.assert.deepEqual),
     equals: countAssert(t.assert.equal),

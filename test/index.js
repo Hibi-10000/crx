@@ -33,7 +33,7 @@ export const TESTS = {
   load: (t, opts) => {
     t.plan(6);
 
-    newCrx(opts).load().then(c => t.pass(/*JSON.stringify*/String(c)));
+    newCrx(opts).load().then((c) => t.pass(/*JSON.stringify*/String(c)));
 
     // Test relative path
     newCrx().load("./test/myFirstExtension").then((crx) => {
