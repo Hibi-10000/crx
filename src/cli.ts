@@ -140,42 +140,35 @@ function pack(dir: string, opts: InterfaceCli) {
         throw err;
       }
     })
-    .then((key) => {
+    .then(async (key) => {
       crx.privateKey = key;
-    })
-    .then(() => {
-      crx
-        .load()
-        .then(() => crx.loadContents())
-        .then((fileBuffer) => {
-          if (opts.zipOutput) {
-            const outFile = path.resolve(cwd, opts.zipOutput);
+      await crx.load()
+      const fileBuffer = await crx.loadContents()
+      if (opts.zipOutput) {
+        const outFile = path.resolve(cwd, opts.zipOutput);
 
-            fs.createWriteStream(outFile).end(fileBuffer);
-          }
-          else {
-            return crx.pack(fileBuffer);
-          }
-        })
-        .then((crxBuffer) => {
-          if (opts.zipOutput) {
-            return;
-          }
-          else if (opts.output) {
-            output = opts.output;
-          }
-          else {
-            output = `${path.basename(cwd)}.crx`;
-          }
+        fs.createWriteStream(outFile).end(fileBuffer);
+      }
+      else {
+        const crxBuffer = await crx.pack(fileBuffer);
+        if (opts.zipOutput) {
+          return;
+        }
+        else if (opts.output) {
+          output = opts.output;
+        }
+        else {
+          output = `${path.basename(cwd)}.crx`;
+        }
 
-          const outFile = path.resolve(cwd, output);
-          if (outFile) {
-            fs.createWriteStream(outFile).end(crxBuffer as Buffer);
-          }
-          else {
-            process.stdout.end(crxBuffer as Buffer);
-          }
-        });
+        const outFile = path.resolve(cwd, output);
+        if (outFile) {
+          fs.createWriteStream(outFile).end(crxBuffer);
+        }
+        else {
+          process.stdout.end(crxBuffer);
+        }
+      }
     });
 }
 
