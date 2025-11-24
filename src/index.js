@@ -104,7 +104,7 @@ class ChromeExtension {
   /**
    * Loads extension manifest and copies its content to a workable path.
    *
-   * @param {string=} path
+   * @param {string | string[]} [path]
    * @returns {Promise<ChromeExtension>}
    */
   async load(path) {

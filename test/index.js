@@ -20,11 +20,12 @@ function newCrx(opts) {
   }, opts));
 }
 
-/** @type {Record<string, (t: import("tape").Test, opts?: { version: number }) => Promise<void>>} */
+/** @type {Record<string, (t: import("tape").Test, opts?: { version: number }) => void>} */
 export const TESTS = {
   ChromeExtension: (t, opts) => {
     t.plan(2);
 
+    //@ts-expect-error
     t.throws(() => ChromeExtension({}));
     t.ok(newCrx(opts));
   },
@@ -32,7 +33,7 @@ export const TESTS = {
   load: (t, opts) => {
     t.plan(6);
 
-    newCrx(opts).load().then(c => t.pass(/*JSON.stringify*/(c)));
+    newCrx(opts).load().then(c => t.pass(/*JSON.stringify*/String(c)));
 
     // Test relative path
     newCrx().load("./test/myFirstExtension").then((crx) => {
@@ -62,6 +63,7 @@ export const TESTS = {
       t.ok(err);
     });
 
+    //@ts-expect-error
     newCrx(opts).load(Buffer.from("")).catch((err) => {
       t.ok(err);
     });
@@ -82,6 +84,7 @@ export const TESTS = {
 
     const crx = newCrx(opts);
 
+    //@ts-expect-error
     t.throws(() => crx.writeFile("/tmp/crx"));
   },
 
