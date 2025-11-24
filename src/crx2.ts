@@ -6,13 +6,8 @@ import crypto from "node:crypto";
  * Generates and returns a signed package from extension content.
  *
  * BC BREAK `this.package` is not stored anymore (since 1.0.0)
- *
- * @param {Buffer} privateKey
- * @param {Buffer} publicKey
- * @param {Buffer} contents
- * @returns {Buffer}
  */
-export default function generatePackage(privateKey, publicKey, contents) {
+export default function generatePackage(privateKey: Buffer, publicKey: Buffer, contents: Buffer): Buffer {
   const signature = generateSignature(privateKey, contents);
 
   const keyLength = publicKey.length;
@@ -39,12 +34,8 @@ export default function generatePackage(privateKey, publicKey, contents) {
  * Generates a SHA1 package signature.
  *
  * BC BREAK `this.signature` is not stored anymore (since 1.0.0)
- *
- * @param {crypto.KeyLike} privateKey
- * @param {Buffer} contents
- * @returns {Buffer}
  */
-function generateSignature(privateKey, contents) {
+function generateSignature(privateKey: crypto.KeyLike, contents: Buffer): Buffer {
   return crypto
     .createSign("sha1")
     .update(contents)
