@@ -1,11 +1,11 @@
 import test from "node:test";
 //TODO: use assert instead of t.assert in nodeUnit_Test
 //import assert from "node:assert/strict";
+import type { Test } from "tape";
 
 import { TESTS, TEST_OPTIONS } from "./index.js";
 
-/** @type {(t: import("node:test").TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void) => import("tape").Test} */
-const tape_Test = (t, resolve, reject) => {
+const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void): Test => {
   let plan = -1;
   let current = 0;
   const countAssert = (func) => {

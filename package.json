@@ -22,7 +22,7 @@
     "typecheck": "tsc",
     "lint": "eslint .",
     "format": "eslint --fix .",
-    "test": "node --experimental-test-coverage --test-coverage-exclude=src/crx3.pb.js --test ./test/index.test.js"
+    "test": "node --experimental-test-coverage --test-coverage-exclude=src/crx3.pb.js --test ./test/index.test.ts"
   },
   "dependencies": {
     "archiver": "^7.0.1",
