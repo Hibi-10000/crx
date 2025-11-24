@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import { join } from "node:path";
 import Zip from "adm-zip";
+import type { Test } from "tape";
 import ChromeExtension from "../src/index.js";
 
 const privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
@@ -10,8 +11,7 @@ const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "up
 const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
 const updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
 
-/** @type {(opts?: { version: number }) => ChromeExtension} */
-function newCrx(opts) {
+function newCrx(opts?: { version: number }): ChromeExtension {
   return new ChromeExtension(Object.assign({
     privateKey: privateKey,
     path: "/tmp",
@@ -20,8 +20,7 @@ function newCrx(opts) {
   }, opts));
 }
 
-/** @type {Record<string, (t: import("tape").Test, opts?: { version: number }) => void>} */
-export const TESTS = {
+export const TESTS: Record<string, (t: Test, opts?: { version: 2 | 3 }) => void> = {
   ChromeExtension: (t, opts) => {
     t.plan(2);
 
@@ -227,7 +226,7 @@ export const TESTS = {
 // Each key is the test name prefix.
 // Each value is an options obect to be passed to test implementation.
 export const TEST_OPTIONS = {
-  "": undefined, // use defaults
-  v2: { version: 2 },
-  v3: { version: 3 },
+  "": undefined as undefined, // use defaults
+  v2: { version: 2 as 2 },
+  v3: { version: 3 as 3 },
 };
