@@ -15,17 +15,14 @@ program.version(pkg.version);
 // coming soon
 // .option("-x, --xml", "output autoupdate xml instead of extension ")
 
-/** @typedef { import("./index") } BrowserExtension */
-
-/**
- * @typedef {Object} InterfaceCli
- * @property {number=} crxVersion
- * @property {boolean} force
- * @property {string} privateKey
- * @property {string=} output
- * @property {string=} zipOutput
- * @property {number=} maxBuffer
- */
+interface InterfaceCli {
+  crxVersion?: number;
+  force: boolean;
+  privateKey: string;
+  output?: string;
+  zipOutput?: string;
+  maxBuffer?: number;
+}
 
 program
   .command("keygen [directory]")
@@ -60,16 +57,14 @@ program
   )
   .action(pack);
 
-/** @type {InterfaceCli} */
 program.parse(process.argv);
 
 /**
  * Generate a new key file
- * @param {String} keyPath path of the key file to create
- * @param {InterfaceCli} opts
- * @returns {Promise<void>}
+ * @param keyPath path of the key file to create
+ * @param opts
  */
-function generateKeyFile(keyPath, opts) {
+function generateKeyFile(keyPath: string, opts: InterfaceCli): Promise<void> {
   const { privateKey } = crypto.generateKeyPairSync("rsa", {
     modulusLength: 2048,
     publicKeyEncoding: {
@@ -87,11 +82,8 @@ function generateKeyFile(keyPath, opts) {
 
 /**
  * Generates a Private Key
- *
- * @param {string} dir
- * @param {InterfaceCli} opts
  */
-function keygen(dir, opts) {
+function keygen(dir: string, opts: InterfaceCli) {
   dir = dir ? path.resolve(cwd, dir) : cwd;
 
   const keyPath = path.join(dir, "key.pem");
@@ -107,16 +99,12 @@ function keygen(dir, opts) {
   }
 }
 
-/**
- * @param {string} dir
- * @param {InterfaceCli} opts
- */
-function pack(dir, opts) {
+function pack(dir: string, opts: InterfaceCli) {
   const input = dir ? path.resolve(cwd, dir) : cwd;
   const keyPath = opts.privateKey
     ? path.resolve(cwd, opts.privateKey)
     : path.join(input, "..", "key.pem");
-  let output;
+  let output: string;
 
   if (opts.output) {
     if (path.extname(opts.output) !== ".crx") {
@@ -182,10 +170,10 @@ function pack(dir, opts) {
 
           const outFile = path.resolve(cwd, output);
           if (outFile) {
-            fs.createWriteStream(outFile).end(crxBuffer);
+            fs.createWriteStream(outFile).end(crxBuffer as Buffer);
           }
           else {
-            process.stdout.end(/** @type {Buffer} */(crxBuffer));
+            process.stdout.end(crxBuffer as Buffer);
           }
         });
     });
