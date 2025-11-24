@@ -5,7 +5,7 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 
 import { program } from "commander";
-import ChromeExtension from "./index.js";
+import ChromeExtension from "./index.ts";
 
 const pkg = JSON.parse(fs.readFileSync("../package.json", "utf8"));
 

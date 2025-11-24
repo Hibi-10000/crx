@@ -3,7 +3,7 @@ import test from "node:test";
 //import assert from "node:assert/strict";
 import type { Test } from "tape";
 
-import { TESTS, TEST_OPTIONS } from "./index.js";
+import { TESTS, TEST_OPTIONS } from "./index.ts";
 
 const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void): Test => {
   let plan = -1;

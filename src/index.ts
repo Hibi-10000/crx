@@ -4,9 +4,9 @@ import fs from "node:fs";
 import { join } from "node:path";
 import crypto from "node:crypto";
 import archiver from "archiver";
-import resolve from "./resolver.js";
-import crx2 from "./crx2.js";
-import crx3 from "./crx3.js";
+import resolve from "./resolver.ts";
+import crx2 from "./crx2.ts";
+import crx3 from "./crx3.ts";
 
 /** @enum {number} CrxVersion */
 export const CrxVersion = {
