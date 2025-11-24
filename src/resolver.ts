@@ -2,17 +2,12 @@
 
 import path from "node:path";
 
-/**
- * @typedef {Object} PathMetadata
- * @property {string} path
- * @property {string} src
- */
+interface PathMetadata {
+  path: string;
+  src: string;
+}
 
-/**
- * @param {string | Array.<string>} pathOrFiles
- * @returns Promise<PathMetadata>
- */
-export default function resolve(pathOrFiles) {
+export default function resolve(pathOrFiles: string | Array<string>): Promise<PathMetadata> {
   return new Promise((resolve, reject) => {
     // legacy and original mode
     if (typeof pathOrFiles === "string") {
