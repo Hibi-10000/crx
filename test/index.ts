@@ -20,7 +20,7 @@ function newCrx(opts?: { version: number }): ChromeExtension {
   }, opts));
 }
 
-export const TESTS: Record<string, (t: Test, opts?: { version: 2 | 3 }) => void> = {
+export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void> = {
   ChromeExtension: (t, opts) => {
     t.plan(2);
 
@@ -174,6 +174,7 @@ export const TESTS: Record<string, (t: Test, opts?: { version: 2 | 3 }) => void>
     t.plan(2);
 
     const crx = newCrx(opts);
+    //@ts-expect-error
     crx.privateKey = null;
 
     crx.generatePublicKey().catch((err) => {

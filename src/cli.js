@@ -185,7 +185,7 @@ function pack(dir, opts) {
             fs.createWriteStream(outFile).end(crxBuffer);
           }
           else {
-            process.stdout.end(crxBuffer);
+            process.stdout.end(/** @type {Buffer} */(crxBuffer));
           }
         });
     });

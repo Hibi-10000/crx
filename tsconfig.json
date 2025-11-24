@@ -12,7 +12,6 @@
     "checkJs": true,
     "strict": true,
     "noImplicitAny": false,
-    "strictNullChecks": false,
     "strictFunctionTypes": false,
     "useUnknownInCatchVariables": false,
     "esModuleInterop": true,
