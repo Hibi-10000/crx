@@ -4,16 +4,25 @@ import test from "node:test";
 
 import { TESTS, TEST_OPTIONS } from "./index.js";
 
-/** @type {(t: import("node:test").TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void) => import("tape").Test & { isPlanned: () => boolean }} */
+/** @type {(t: import("node:test").TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void) => import("tape").Test} */
 const tape_Test = (t, resolve, reject) => {
-  let planned = false;
+  let plan = -1;
+  let current = 0;
+  const countAssert = (func) => {
+    return (...args) => {
+      func.apply(null, args);
+      current++;
+      if (plan !== -1 && plan === current) {
+        resolve();
+      }
+    };
+  };
   // @ts-expect-error
   return {
-    isPlanned: () => planned,
-    plan: () => {
-      planned = true;
+    plan: (n) => {
+      plan = n;
     },
-    throws: t.assert.throws,
+    throws: countAssert(t.assert.throws),
     end: (e) => {
       if (e) {
         reject(e);
@@ -22,11 +31,11 @@ const tape_Test = (t, resolve, reject) => {
         resolve();
       }
     },
-    ok: t.assert.ok,
-    pass: () => t.assert.ok(true),
-    error: t.assert.fail,
-    deepEqual: t.assert.deepEqual,
-    equals: t.assert.equal,
+    ok: countAssert(t.assert.ok),
+    pass: countAssert(msg => t.assert.ok(true, msg)),
+    error: countAssert(t.assert.fail),
+    deepEqual: countAssert(t.assert.deepEqual),
+    equals: countAssert(t.assert.equal),
   };
 };
 
@@ -38,9 +47,6 @@ for (const key in TEST_OPTIONS) {
         await new Promise((resolve, reject) => {
           const t_ = tape_Test(t, resolve, reject);
           test(t_, TEST_OPTIONS[key]);
-          if (t_.isPlanned()) {
-            resolve();
-          }
         });
       });
     }
