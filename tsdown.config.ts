@@ -15,6 +15,10 @@ export default defineConfig({
 	},
 	skipNodeModulesBundle: true,
 	platform: "node",
+	copy: [
+		"src/index.cjs",
+		"src/index.d.cts",
+	],
 	report: {
 		gzip: false,
 	}
