@@ -10,15 +10,23 @@
     "url": "git://github.com/oncletom/crx.git"
   },
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "bin": {
-    "crx": "./src/cli.js"
+    "crx": "./dist/cli.js"
   },
   "engines": {
     "node": ">=18",
     "pnpm": ">=10.16"
   },
   "scripts": {
+    "build": "tsdown",
     "typecheck": "tsc",
     "lint": "eslint .",
     "format": "eslint --fix .",
@@ -46,6 +54,7 @@
     "adm-zip": "^0.4.13",
     "eslint": "^9.38.0",
     "globals": "^16.4.0",
+    "tsdown": "^0.16.5",
     "typescript": "^5.9.3"
   }
 }

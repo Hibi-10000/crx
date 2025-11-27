@@ -7,6 +7,7 @@ import stylistic from "@stylistic/eslint-plugin";
 export default defineConfig([
   {
     ignores: [
+      "dist",
       "node_modules",
       "src/crx3.pb.js",
     ],

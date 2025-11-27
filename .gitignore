@@ -1,6 +1,7 @@
 test/*.crx
 test/*.zip
 test/*.xml
+dist
 node_modules
 coverage
 .nyc_output
