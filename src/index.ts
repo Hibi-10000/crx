@@ -234,4 +234,4 @@ class ChromeExtension {
   }
 }
 
-export default ChromeExtension;
+export { ChromeExtension as default, ChromeExtension as "module.exports" };
