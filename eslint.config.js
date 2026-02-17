@@ -45,6 +45,7 @@ export default defineConfig([
     files: ["**/*.ts"],
     extends: [
       tseslint.configs.strict,
+      tseslint.configs.stylistic,
     ],
     rules: {
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],

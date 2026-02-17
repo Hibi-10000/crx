@@ -32,7 +32,7 @@ class ChromeExtension {
   //@ts-expect-error
   path: string;
   src: string;
-  ignore: Array<string>;
+  ignore: string[];
   version: number;
   loaded: boolean;
   //@ts-expect-error

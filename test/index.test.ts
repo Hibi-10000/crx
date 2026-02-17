@@ -39,7 +39,7 @@ const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject
   };
 };
 
-for (const key of Object.keys(TEST_OPTIONS) as Array<keyof typeof TEST_OPTIONS>) {
+for (const key of Object.keys(TEST_OPTIONS) as (keyof typeof TEST_OPTIONS)[]) {
   test("crx", async (t) => {
     for (const name in TESTS) {
       const test = TESTS[name];

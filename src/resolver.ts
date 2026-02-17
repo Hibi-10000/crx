@@ -7,7 +7,7 @@ interface PathMetadata {
   src: string;
 }
 
-export default function resolve(pathOrFiles: string | Array<string>): Promise<PathMetadata> {
+export default function resolve(pathOrFiles: string | string[]): Promise<PathMetadata> {
   return new Promise((resolve, reject) => {
     // legacy and original mode
     if (typeof pathOrFiles === "string") {

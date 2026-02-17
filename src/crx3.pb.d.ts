@@ -1,10 +1,10 @@
 import type Pbf from "pbf";
 
-type CrxFileHeader = {
+interface CrxFileHeader {
   sha256_with_rsa?: AsymmetricKeyProof[];
   sha256_with_ecdsa?: AsymmetricKeyProof[];
   signed_header_data?: Uint8Array;
-};
+}
 export function readCrxFileHeader(pbf: Pbf, end?: number): CrxFileHeader;
 export function writeCrxFileHeader(obj: CrxFileHeader, pbf: Pbf): void;
 
