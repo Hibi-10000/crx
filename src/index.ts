@@ -19,7 +19,7 @@ interface BrowserManifest {
   version: string;
 }
 
-type BrowserExtensionOptions = Object;
+type BrowserExtensionOptions = object;
 
 class ChromeExtension {
   appId: string | null;

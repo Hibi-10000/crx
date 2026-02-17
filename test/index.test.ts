@@ -8,9 +8,9 @@ import { TESTS, TEST_OPTIONS } from "./index.ts";
 const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void): Test => {
   let plan = -1;
   let current = 0;
-  const countAssert = (func: Function) => {
+  const countAssert = (func: (...args: any[]) => any) => {
     return (...args: any[]) => {
-      func.apply(null, args);
+      func(...args);
       current++;
       if (plan !== -1 && plan === current) {
         resolve();
