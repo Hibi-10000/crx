@@ -2,6 +2,7 @@ import { defineConfig } from "eslint/config";
 
 import globals from "globals";
 import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";
 
 export default defineConfig([
@@ -21,12 +22,13 @@ export default defineConfig([
     arrowParens: true,
   }),
   {
-    files: ["**/*.js"],
+    files: ["**/*.{js,ts}"],
     languageOptions: {
       globals: {
         ...globals.nodeBuiltin,
       },
       ecmaVersion: 2022,
+      sourceType: "module",
     },
     extends: [
       eslint.configs.recommended,
@@ -37,6 +39,17 @@ export default defineConfig([
       "prefer-const": "error",
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
       "prefer-arrow-callback": "error",
+    },
+  },
+  {
+    files: ["**/*.ts"],
+    extends: [
+      tseslint.configs.strict,
+    ],
+    rules: {
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
+      "@typescript-eslint/ban-ts-comment": ["error", { "ts-expect-error": false }],
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 ]);
