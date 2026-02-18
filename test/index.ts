@@ -38,12 +38,12 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     // Test relative path
     newCrx().load("./test/myFirstExtension").then((crx) => {
       t.ok(crx);
-    }).catch(t.error.bind(t));
+    });
 
     // Test absolute path
     newCrx().load(join(import.meta.dirname, "myFirstExtension")).then((crx) => {
       t.ok(crx);
-    }).catch(t.error.bind(t));
+    });
 
     // Test list of files
     const fileList = [
@@ -75,8 +75,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     const crx = newCrx(opts);
     crx.pack().then((packageData) => {
       t.ok(packageData instanceof Buffer);
-    })
-      .catch(t.error.bind(t));
+    });
   },
 
   writeFile: (t, opts) => {
@@ -107,8 +106,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
           });
 
         t.deepEqual(entries, ["manifest.json"]);
-      })
-      .catch(t.error.bind(t));
+      });
   },
 
   loadContents: (t, opts) => {
@@ -141,8 +139,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
         t.deepEqual(entries, ["icon.png", "manifest.json"]);
 
         return packageData;
-      })
-      .catch(t.error.bind(t));
+      });
   },
 
   generateUpdateXML: (t, opts) => {
@@ -157,8 +154,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       const xmlBuffer = crx.generateUpdateXML();
 
       t.equals(xmlBuffer.toString(), expected.toString());
-    })
-      .catch(t.error.bind(t));
+    });
 
     const crxCustom = newCrx(opts);
     crxCustom.load().then(() => {
@@ -167,8 +163,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
         const xmlBuffer = crxCustom.generateUpdateXML();
 
         t.equals(xmlBuffer.toString(), updateXmlCustom.toString());
-      })
-        .catch(t.error.bind(t));
+      });
     });
   },
 
@@ -200,8 +195,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     // from Public Key
     crx.generatePublicKey().then((publicKey) => {
       t.equals(crx.generateAppId(publicKey), "eoilidhiokfphdhpmhoaengdkehanjif");
-    })
-      .catch(t.error.bind(t));
+    });
 
     // from Linux Path
     t.equals(crx.generateAppId("/usr/local/extension"), "ioglhmppkolgcgoonkfdbjkcedfjhbcd");
