@@ -11,13 +11,14 @@ const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "up
 const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
 const updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
 
-function newCrx(opts?: { version: number }): ChromeExtension {
-  return new ChromeExtension(Object.assign({
+function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0]): ChromeExtension {
+  return new ChromeExtension({
     privateKey: privateKey,
     path: "/tmp",
     codebase: "http://localhost:8000/myFirstExtension.crx",
     rootDirectory: join(import.meta.dirname, "myFirstExtension"),
-  }, opts));
+    ...opts,
+  });
 }
 
 export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void> = {
@@ -90,9 +91,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   ignoreFiles: (t, opts) => {
     t.plan(1);
 
-    const crx = newCrx(Object.assign({
+    const crx = newCrx({
       ignore: ["*.png"],
-    }, opts));
+      ...opts,
+    });
 
     crx.load().then(() => {
       return crx.loadContents();
