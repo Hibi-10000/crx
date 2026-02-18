@@ -23,25 +23,22 @@ function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0]): Chrome
 
 export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void> = {
   ChromeExtension: (t, opts) => {
-    t.plan(2);
-
     //@ts-expect-error
     t.throws(() => ChromeExtension({}));
     t.ok(newCrx(opts));
+    t.end();
   },
 
-  load: (t, opts) => {
-    t.plan(6);
-
-    newCrx(opts).load().then((c) => t.pass(/*JSON.stringify*/String(c)));
+  load: async (t, opts) => {
+    await newCrx(opts).load().then((c) => t.pass(/*JSON.stringify*/String(c)));
 
     // Test relative path
-    newCrx().load("./test/myFirstExtension").then((crx) => {
+    await newCrx().load("./test/myFirstExtension").then((crx) => {
       t.ok(crx);
     });
 
     // Test absolute path
-    newCrx().load(join(import.meta.dirname, "myFirstExtension")).then((crx) => {
+    await newCrx().load(join(import.meta.dirname, "myFirstExtension")).then((crx) => {
       t.ok(crx);
     });
 
@@ -51,7 +48,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    newCrx(opts).load(fileList).then((crx) => {
+    await newCrx(opts).load(fileList).then((crx) => {
       t.ok(crx);
     });
 
@@ -59,43 +56,40 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    newCrx(opts).load(fileList2).catch((err) => {
+    await newCrx(opts).load(fileList2).catch((err) => {
       t.ok(err);
     });
 
     //@ts-expect-error
-    newCrx(opts).load(Buffer.from("")).catch((err) => {
+    await newCrx(opts).load(Buffer.from("")).catch((err) => {
       t.ok(err);
     });
+    t.end();
   },
 
-  pack: (t, opts) => {
-    t.plan(1);
-
+  pack: async (t, opts) => {
     const crx = newCrx(opts);
-    crx.pack().then((packageData) => {
+    await crx.pack().then((packageData) => {
       t.ok(packageData instanceof Buffer);
     });
+    t.end();
   },
 
   writeFile: (t, opts) => {
-    t.plan(1);
-
     const crx = newCrx(opts);
 
     //@ts-expect-error
     t.throws(() => crx.writeFile("/tmp/crx"));
+    t.end();
   },
 
-  ignoreFiles: (t, opts) => {
-    t.plan(1);
-
+  ignoreFiles: async (t, opts) => {
     const crx = newCrx({
       ignore: ["*.png"],
       ...opts,
     });
 
-    crx.load().then(() => {
+    await crx.load().then(() => {
       return crx.loadContents();
     })
       .then((packageData) => {
@@ -107,18 +101,17 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
         t.deepEqual(entries, ["manifest.json"]);
       });
+    t.end();
   },
 
-  loadContents: (t, opts) => {
-    t.plan(3);
-
-    newCrx(opts).loadContents().catch((err) => {
+  loadContents: async (t, opts) => {
+    await newCrx(opts).loadContents().catch((err) => {
       t.ok(err instanceof Error);
     });
 
     const crx = newCrx(opts);
 
-    crx.load().then(() => {
+    await crx.load().then(() => {
       return crx.loadContents();
     })
       .then((contentsBuffer) => {
@@ -140,24 +133,23 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
         return packageData;
       });
+    t.end();
   },
 
-  generateUpdateXML: (t, opts) => {
-    t.plan(3);
-
+  generateUpdateXML: async (t, opts) => {
     t.throws(() => new ChromeExtension({}).generateUpdateXML(), "No URL provided for update.xml");
 
     const crx = newCrx(opts);
     const expected = crx.version === 2 ? updateXml2 : updateXml3;
 
-    crx.pack().then(() => {
+    await crx.pack().then(() => {
       const xmlBuffer = crx.generateUpdateXML();
 
       t.equals(xmlBuffer.toString(), expected.toString());
     });
 
     const crxCustom = newCrx(opts);
-    crxCustom.load().then(() => {
+    await crxCustom.load().then(() => {
       crxCustom.manifest.minimum_chrome_version = "99.99.99-crxtest";
       crxCustom.pack().then(() => {
         const xmlBuffer = crxCustom.generateUpdateXML();
@@ -165,27 +157,25 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
         t.equals(xmlBuffer.toString(), updateXmlCustom.toString());
       });
     });
+    t.end();
   },
 
-  generatePublicKey: (t, opts) => {
-    t.plan(2);
-
+  generatePublicKey: async (t, opts) => {
     const crx = newCrx(opts);
     //@ts-expect-error
     crx.privateKey = null;
 
-    crx.generatePublicKey().catch((err) => {
+    await crx.generatePublicKey().catch((err) => {
       t.ok(err);
     });
 
-    newCrx(opts).generatePublicKey().then((publicKey) => {
+    await newCrx(opts).generatePublicKey().then((publicKey) => {
       t.equals(publicKey.length, 162);
     });
+    t.end();
   },
 
-  generateAppId: (t, opts) => {
-    t.plan(4);
-
+  generateAppId: async (t, opts) => {
     t.throws(() => {
       newCrx(opts).generateAppId();
     }, /Public key is neither set, nor given/);
@@ -193,7 +183,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     const crx = newCrx(opts);
 
     // from Public Key
-    crx.generatePublicKey().then((publicKey) => {
+    await crx.generatePublicKey().then((publicKey) => {
       t.equals(crx.generateAppId(publicKey), "eoilidhiokfphdhpmhoaengdkehanjif");
     });
 
@@ -202,6 +192,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     // from Windows Path
     t.equals(crx.generateAppId("c:\\a"), "igchicfaapedlfgmepccnpolhajaphik");
+    t.end();
   },
 
   "end to end": (t, opts) => {

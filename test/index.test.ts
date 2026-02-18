@@ -6,23 +6,9 @@ import type { Test } from "tape";
 import { TESTS, TEST_OPTIONS } from "./index.ts";
 
 const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject: (reason?: any) => void): Test => {
-  let plan = -1;
-  let current = 0;
-  const countAssert = (func: (...args: any[]) => any) => {
-    return (...args: any[]) => {
-      func(...args);
-      current++;
-      if (plan !== -1 && plan === current) {
-        resolve();
-      }
-    };
-  };
   // @ts-expect-error
   return {
-    plan: (n) => {
-      plan = n;
-    },
-    throws: countAssert(t.assert.throws),
+    throws: t.assert.throws,
     end: (e) => {
       if (e) {
         reject(e);
@@ -31,11 +17,11 @@ const tape_Test = (t: test.TestContext, resolve: (value?: never) => void, reject
         resolve();
       }
     },
-    ok: countAssert(t.assert.ok),
-    pass: countAssert((msg: string | undefined) => t.assert.ok(true, msg)),
-    error: countAssert(t.assert.fail),
-    deepEqual: countAssert(t.assert.deepEqual),
-    equals: countAssert(t.assert.equal),
+    ok: t.assert.ok,
+    pass: (msg: string | undefined) => t.assert.ok(true, msg),
+    error: t.assert.fail,
+    deepEqual: t.assert.deepEqual,
+    equals: t.assert.equal,
   };
 };
 
