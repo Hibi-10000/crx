@@ -99,7 +99,7 @@ function keygen(dir: string, opts: InterfaceCli) {
   }
 }
 
-function pack(dir: string, opts: InterfaceCli) {
+async function pack(dir: string, opts: InterfaceCli) {
   const input = dir ? path.resolve(cwd, dir) : cwd;
   const keyPath = opts.privateKey
     ? path.resolve(cwd, opts.privateKey)
@@ -128,7 +128,7 @@ function pack(dir: string, opts: InterfaceCli) {
     version: opts.crxVersion || 3,
   });
 
-  fs.promises.readFile(keyPath)
+  await fs.promises.readFile(keyPath)
     .then(null, async (err) => {
       // If the key file doesn't exist, create one
       if (err.code === "ENOENT") {
