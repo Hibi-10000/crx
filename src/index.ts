@@ -157,7 +157,7 @@ class ChromeExtension {
         .glob(this.src, {
           cwd: this.path,
           matchBase: true,
-          ignore: ["*.pem", ".git"].concat(this.ignore),
+          ignore: ["*.pem", ".git", ...this.ignore],
         })
         .finalize();
     });
