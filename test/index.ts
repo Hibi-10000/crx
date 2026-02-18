@@ -21,12 +21,11 @@ function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0]): Chrome
   });
 }
 
-export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void> = {
+export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void | Promise<void>> = {
   ChromeExtension: (t, opts) => {
     //@ts-expect-error
     t.throws(() => ChromeExtension({}));
     t.ok(newCrx(opts));
-    t.end();
   },
 
   load: async (t, opts) => {
@@ -64,7 +63,6 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     await newCrx(opts).load(Buffer.from("")).catch((err) => {
       t.ok(err);
     });
-    t.end();
   },
 
   pack: async (t, opts) => {
@@ -72,7 +70,6 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     await crx.pack().then((packageData) => {
       t.ok(packageData instanceof Buffer);
     });
-    t.end();
   },
 
   writeFile: (t, opts) => {
@@ -80,7 +77,6 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     //@ts-expect-error
     t.throws(() => crx.writeFile("/tmp/crx"));
-    t.end();
   },
 
   ignoreFiles: async (t, opts) => {
@@ -101,7 +97,6 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
         t.deepEqual(entries, ["manifest.json"]);
       });
-    t.end();
   },
 
   loadContents: async (t, opts) => {
@@ -133,7 +128,6 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
         return packageData;
       });
-    t.end();
   },
 
   generateUpdateXML: async (t, opts) => {
@@ -149,15 +143,14 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     });
 
     const crxCustom = newCrx(opts);
-    await crxCustom.load().then(() => {
+    await crxCustom.load().then(async () => {
       crxCustom.manifest.minimum_chrome_version = "99.99.99-crxtest";
-      crxCustom.pack().then(() => {
+      await crxCustom.pack().then(() => {
         const xmlBuffer = crxCustom.generateUpdateXML();
 
         t.equals(xmlBuffer.toString(), updateXmlCustom.toString());
       });
     });
-    t.end();
   },
 
   generatePublicKey: async (t, opts) => {
@@ -172,7 +165,6 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     await newCrx(opts).generatePublicKey().then((publicKey) => {
       t.equals(publicKey.length, 162);
     });
-    t.end();
   },
 
   generateAppId: async (t, opts) => {
@@ -192,21 +184,19 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     // from Windows Path
     t.equals(crx.generateAppId("c:\\a"), "igchicfaapedlfgmepccnpolhajaphik");
-    t.end();
   },
 
-  "end to end": (t, opts) => {
+  "end to end": async (t, opts) => {
     const crx = newCrx(opts);
 
-    crx.load()
+    await crx.load()
       .then((crx) => {
         return crx.pack();
       })
       .then(async (crxBuffer) => {
         await fs.promises.writeFile("build.crx", crxBuffer);
         await fs.promises.writeFile("update.xml", crx.generateUpdateXML());
-      })
-      .then(t.end);
+      });
   },
 };
 
