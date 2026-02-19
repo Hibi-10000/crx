@@ -9,9 +9,9 @@ const testWrap = (t: test.TestContext): Test => {
     throws: t.assert.throws,
     ok: t.assert.ok,
     pass: (msg?: string) => t.assert.ok(true, msg),
-    error: t.assert.fail,
     deepEqual: t.assert.deepEqual,
     equals: t.assert.equal,
+    rejects: t.assert.rejects,
   };
 };
 

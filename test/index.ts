@@ -10,9 +10,9 @@ export interface Test {
   throws: TestContextAssert["throws"];
   ok: (...args: Parameters<TestContextAssert["ok"]>) => void;
   pass: (msg?: string) => void;
-  error: TestContextAssert["fail"];
   deepEqual: TestContextAssert["deepEqual"];
   equals: TestContextAssert["equal"];
+  rejects: TestContextAssert["rejects"];
 }
 
 const privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
@@ -58,14 +58,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    await newCrx(opts).load(fileList2).catch((err) => {
-      t.ok(err);
-    });
+    await t.rejects(async () => await newCrx(opts).load(fileList2));
 
     //@ts-expect-error
-    await newCrx(opts).load(Buffer.from("")).catch((err) => {
-      t.ok(err);
-    });
+    await t.rejects(async () => await newCrx(opts).load(Buffer.from("")));
   },
 
   pack: async (t, opts) => {
@@ -99,9 +95,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   },
 
   loadContents: async (t, opts) => {
-    await newCrx(opts).loadContents().catch((err) => {
-      t.ok(err instanceof Error);
-    });
+    await t.rejects(async () => await newCrx(opts).loadContents(), (err) => err instanceof Error);
 
     const crx = newCrx(opts);
 
@@ -146,9 +140,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     //@ts-expect-error
     crx.privateKey = null;
 
-    await crx.generatePublicKey().catch((err) => {
-      t.ok(err);
-    });
+    await t.rejects(async () => await crx.generatePublicKey());
 
     const publicKey = await newCrx(opts).generatePublicKey();
     t.equals(publicKey.length, 162);
