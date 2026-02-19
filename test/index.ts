@@ -29,17 +29,13 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   },
 
   load: async (t, opts) => {
-    await newCrx(opts).load().then((c) => t.pass(/*JSON.stringify*/String(c)));
+    t.pass(/*JSON.stringify*/(await newCrx(opts).load()).toString());
 
     // Test relative path
-    await newCrx().load("./test/myFirstExtension").then((crx) => {
-      t.ok(crx);
-    });
+    t.ok(await newCrx().load("./test/myFirstExtension"));
 
     // Test absolute path
-    await newCrx().load(join(import.meta.dirname, "myFirstExtension")).then((crx) => {
-      t.ok(crx);
-    });
+    t.ok(await newCrx().load(join(import.meta.dirname, "myFirstExtension")));
 
     // Test list of files
     const fileList = [
@@ -47,9 +43,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    await newCrx(opts).load(fileList).then((crx) => {
-      t.ok(crx);
-    });
+    t.ok(await newCrx(opts).load(fileList));
 
     const fileList2 = [
       "test/myFirstExtension/icon.png",
@@ -67,9 +61,8 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
   pack: async (t, opts) => {
     const crx = newCrx(opts);
-    await crx.pack().then((packageData) => {
-      t.ok(packageData instanceof Buffer);
-    });
+    const packageData = await crx.pack();
+    t.ok(packageData instanceof Buffer);
   },
 
   writeFile: (t, opts) => {
@@ -85,18 +78,15 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       ...opts,
     });
 
-    await crx.load().then(() => {
-      return crx.loadContents();
-    })
-      .then((packageData) => {
-        const entries = new Zip(packageData)
-          .getEntries()
-          .map((entry) => {
-            return entry.entryName;
-          });
-
-        t.deepEqual(entries, ["manifest.json"]);
+    await crx.load();
+    const packageData = await crx.loadContents();
+    const entries = new Zip(packageData)
+      .getEntries()
+      .map((entry) => {
+        return entry.entryName;
       });
+
+    t.deepEqual(entries, ["manifest.json"]);
   },
 
   loadContents: async (t, opts) => {
@@ -106,28 +96,20 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     const crx = newCrx(opts);
 
-    await crx.load().then(() => {
-      return crx.loadContents();
-    })
-      .then((contentsBuffer) => {
-        t.ok(contentsBuffer instanceof Buffer);
-
-        return contentsBuffer;
+    await crx.load();
+    const contentsBuffer = await crx.loadContents();
+    t.ok(contentsBuffer instanceof Buffer);
+    const packageData = contentsBuffer;
+    const entries = new Zip(packageData)
+      .getEntries()
+      .map((entry) => {
+        return entry.entryName;
       })
-      .then((packageData) => {
-        const entries = new Zip(packageData)
-          .getEntries()
-          .map((entry) => {
-            return entry.entryName;
-          })
-          .sort((a, b) => {
-            return a.localeCompare(b);
-          });
-
-        t.deepEqual(entries, ["icon.png", "manifest.json"]);
-
-        return packageData;
+      .sort((a, b) => {
+        return a.localeCompare(b);
       });
+
+    t.deepEqual(entries, ["icon.png", "manifest.json"]);
   },
 
   generateUpdateXML: async (t, opts) => {
@@ -136,21 +118,18 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     const crx = newCrx(opts);
     const expected = crx.version === 2 ? updateXml2 : updateXml3;
 
-    await crx.pack().then(() => {
-      const xmlBuffer = crx.generateUpdateXML();
+    await crx.pack();
+    const xmlBuffer = crx.generateUpdateXML();
 
-      t.equals(xmlBuffer.toString(), expected.toString());
-    });
+    t.equals(xmlBuffer.toString(), expected.toString());
 
     const crxCustom = newCrx(opts);
-    await crxCustom.load().then(async () => {
-      crxCustom.manifest.minimum_chrome_version = "99.99.99-crxtest";
-      await crxCustom.pack().then(() => {
-        const xmlBuffer = crxCustom.generateUpdateXML();
+    await crxCustom.load();
+    crxCustom.manifest.minimum_chrome_version = "99.99.99-crxtest";
+    await crxCustom.pack();
+    const xmlBufferCustom = crxCustom.generateUpdateXML();
 
-        t.equals(xmlBuffer.toString(), updateXmlCustom.toString());
-      });
-    });
+    t.equals(xmlBufferCustom.toString(), updateXmlCustom.toString());
   },
 
   generatePublicKey: async (t, opts) => {
@@ -162,9 +141,8 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       t.ok(err);
     });
 
-    await newCrx(opts).generatePublicKey().then((publicKey) => {
-      t.equals(publicKey.length, 162);
-    });
+    const publicKey = await newCrx(opts).generatePublicKey();
+    t.equals(publicKey.length, 162);
   },
 
   generateAppId: async (t, opts) => {
@@ -175,9 +153,8 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     const crx = newCrx(opts);
 
     // from Public Key
-    await crx.generatePublicKey().then((publicKey) => {
-      t.equals(crx.generateAppId(publicKey), "eoilidhiokfphdhpmhoaengdkehanjif");
-    });
+    const publicKey = await crx.generatePublicKey();
+    t.equals(crx.generateAppId(publicKey), "eoilidhiokfphdhpmhoaengdkehanjif");
 
     // from Linux Path
     t.equals(crx.generateAppId("/usr/local/extension"), "ioglhmppkolgcgoonkfdbjkcedfjhbcd");
@@ -189,14 +166,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   "end to end": async (t, opts) => {
     const crx = newCrx(opts);
 
-    await crx.load()
-      .then((crx) => {
-        return crx.pack();
-      })
-      .then(async (crxBuffer) => {
-        await fs.promises.writeFile("build.crx", crxBuffer);
-        await fs.promises.writeFile("update.xml", crx.generateUpdateXML());
-      });
+    const loadedCrx = await crx.load();
+    const crxBuffer = await loadedCrx.pack();
+    await fs.promises.writeFile("build.crx", crxBuffer);
+    await fs.promises.writeFile("update.xml", loadedCrx.generateUpdateXML());
   },
 };
 
