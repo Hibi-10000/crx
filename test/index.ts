@@ -3,8 +3,17 @@
 import fs from "node:fs";
 import { join } from "node:path";
 import Zip from "adm-zip";
-import type { Test } from "tape";
 import ChromeExtension from "../src/index.ts";
+import type { TestContextAssert } from "node:test";
+
+export interface Test {
+  throws: TestContextAssert["throws"];
+  ok: (...args: Parameters<TestContextAssert["ok"]>) => void;
+  pass: (msg?: string) => void;
+  error: TestContextAssert["fail"];
+  deepEqual: TestContextAssert["deepEqual"];
+  equals: TestContextAssert["equal"];
+}
 
 const privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
 const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));

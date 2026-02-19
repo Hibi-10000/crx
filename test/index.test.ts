@@ -1,16 +1,14 @@
 import test from "node:test";
-//TODO: use assert instead of t.assert in nodeUnit_Test
+//TODO: use assert instead of t.assert in testWrap
 //import assert from "node:assert/strict";
-import type { Test } from "tape";
 
-import { TESTS, TEST_OPTIONS } from "./index.ts";
+import { TESTS, TEST_OPTIONS, type Test } from "./index.ts";
 
-const tape_Test = (t: test.TestContext): Test => {
-  // @ts-expect-error
+const testWrap = (t: test.TestContext): Test => {
   return {
     throws: t.assert.throws,
     ok: t.assert.ok,
-    pass: (msg: string | undefined) => t.assert.ok(true, msg),
+    pass: (msg?: string) => t.assert.ok(true, msg),
     error: t.assert.fail,
     deepEqual: t.assert.deepEqual,
     equals: t.assert.equal,
@@ -22,7 +20,7 @@ for (const key of Object.keys(TEST_OPTIONS) as (keyof typeof TEST_OPTIONS)[]) {
     for (const name in TESTS) {
       const test = TESTS[name];
       await t.test((key === "" ? "default" : key) + " - " + name, async (t) => {
-        const t_ = tape_Test(t);
+        const t_ = testWrap(t);
         await test(t_, TEST_OPTIONS[key]);
       });
     }
