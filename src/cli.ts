@@ -21,7 +21,7 @@ interface InterfaceCli {
   privateKey: string;
   output?: string;
   zipOutput?: string;
-  maxBuffer?: number;
+  //maxBuffer?: number;
 }
 
 program
@@ -46,10 +46,10 @@ program
   .option(
     "-p, --private-key <file>",
     "relative path to private key [key.pem], defaults to [directory/../key.pem]")
-  .option(
-    "-b, --max-buffer <total>",
-    "max amount of memory allowed to generate the crx, in byte",
-  )
+  //.option(
+  //  "-b, --max-buffer <total>",
+  //  "max amount of memory allowed to generate the crx, in byte",
+  //)
   .option(
     "-c, --crx-version [number]",
     "CRX format version, can be either 2 or 3, defaults to 3",
@@ -124,7 +124,7 @@ async function pack(dir: string, opts: InterfaceCli) {
 
   const crx = new ChromeExtension({
     rootDirectory: input,
-    maxBuffer: opts.maxBuffer,
+    //maxBuffer: opts.maxBuffer,
     version: opts.crxVersion || 3,
   });
 
