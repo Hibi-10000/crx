@@ -52,6 +52,7 @@ export default defineConfig([
       "@typescript-eslint/ban-ts-comment": ["error", { "ts-expect-error": false }],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-inferrable-types": "off",
     },
   },
 ]);

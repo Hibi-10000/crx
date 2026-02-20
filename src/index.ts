@@ -26,23 +26,18 @@ type BrowserExtensionOptions = {
 
 class ChromeExtension {
   appId?: string;
-  rootDirectory: string;
+  rootDirectory: string = "";
   publicKey?: Buffer;
   privateKey?: Buffer;
   codebase?: string;
   path?: string;
-  src: string;
-  ignore: string[];
-  version: number;
+  src: string = "**";
+  ignore: string[] = ["*.crx"];
+  version: number = CrxVersion.VERSION_3;
   loaded: boolean;
   manifest?: BrowserManifest;
 
   constructor(attrs: BrowserExtensionOptions) {
-    this.rootDirectory = "";
-    this.src = "**";
-    this.ignore = ["*.crx"];
-    this.version = CrxVersion.VERSION_3;
-
     Object.assign(this, attrs);
     this.loaded = false;
   }
