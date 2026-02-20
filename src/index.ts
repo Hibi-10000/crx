@@ -12,7 +12,7 @@ import crx3 from "./crx3.ts";
 export const CrxVersion = {
   VERSION_2: 2,
   VERSION_3: 3,
-};
+} as const;
 
 interface BrowserManifest {
   minimum_chrome_version?: string;
