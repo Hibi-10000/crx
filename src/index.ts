@@ -98,20 +98,17 @@ class ChromeExtension {
    *   // do something with publicKey
    * });
    */
-  generatePublicKey(): Promise<Buffer> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async generatePublicKey(): Promise<Buffer> {
     const privateKey = this.privateKey;
 
-    return new Promise((resolve, reject) => {
-      if (!privateKey) {
-        return void reject(
-          new Error("Impossible to generate a public key: privateKey option has not been defined or is empty."),
-        );
-      }
+    if (!privateKey) {
+      throw new Error("Impossible to generate a public key: privateKey option has not been defined or is empty.");
+    }
 
-      const key = crypto.createPublicKey(privateKey);
+    const key = crypto.createPublicKey(privateKey);
 
-      resolve(key.export({ type: "spki", format: "der" }));
-    });
+    return key.export({ type: "spki", format: "der" });
   }
 
   /**
