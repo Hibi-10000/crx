@@ -72,8 +72,9 @@ class ChromeExtension {
   /**
    * Loads extension manifest and copies its content to a workable path.
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async load(path?: string | string[]): Promise<ChromeExtension> {
-    const metadata = await resolve(path || this.rootDirectory);
+    const metadata = resolve(path || this.rootDirectory);
     this.path = metadata.path;
     this.src = metadata.src;
 
