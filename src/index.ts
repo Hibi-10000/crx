@@ -15,7 +15,7 @@ export const CrxVersion = {
 };
 
 interface BrowserManifest {
-  minimum_chrome_version: string;
+  minimum_chrome_version?: string;
   version: string;
 }
 
@@ -212,15 +212,20 @@ class ChromeExtension {
     if (!this.codebase) {
       throw new Error("No URL provided for update.xml.");
     }
+    if (!this.loaded) {
+      throw new Error(
+        "crx.load needs to be called first in order to generate update.xml.",
+      );
+    }
 
-    const browserVersion = this.manifest?.minimum_chrome_version
+    const browserVersion = this.manifest!.minimum_chrome_version
       || (this.version < 3 && "29.0.0") // Earliest version with extensions API
       || "64.0.3242"; // Chrome started generating CRX3 packages
 
     return Buffer.from(`<?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
   <app appid='${this.appId || this.generateAppId()}'>
-    <updatecheck codebase='${this.codebase}' version='${this.manifest?.version}' prodversionmin='${browserVersion}' />
+    <updatecheck codebase='${this.codebase}' version='${this.manifest!.version}' prodversionmin='${browserVersion}' />
   </app>
 </gupdate>`);
   }
