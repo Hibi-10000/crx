@@ -7,7 +7,7 @@ import crypto from "node:crypto";
  *
  * BC BREAK `this.package` is not stored anymore (since 1.0.0)
  */
-export default function generatePackage(privateKey: Buffer, publicKey: Buffer, contents: Buffer): Buffer {
+export default function generatePackage(privateKey: crypto.KeyLike, publicKey: Buffer, contents: Buffer): Buffer {
   const signature = generateSignature(privateKey, contents);
 
   const keyLength = publicKey.length;

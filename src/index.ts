@@ -28,7 +28,7 @@ class ChromeExtension {
   appId?: string;
   rootDirectory: string = "";
   publicKey?: Buffer;
-  privateKey?: Buffer;
+  privateKey?: crypto.KeyLike;
   codebase?: string;
   path?: string;
   src: string = "**";

@@ -11,7 +11,7 @@ import * as crx from "./crx3.pb.js";
  *
  * @see {@link https://github.com/chromium/chromium/blob/master/components/crx_file/crx_creator.cc}
  */
-export default function generatePackage(privateKey: Buffer, publicKey: Buffer, contents: Buffer): Buffer {
+export default function generatePackage(privateKey: crypto.KeyLike, publicKey: Buffer, contents: Buffer): Buffer {
   let pb: PBf;
 
   pb = new PBf();
