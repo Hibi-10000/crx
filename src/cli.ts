@@ -7,11 +7,11 @@ import crypto from "node:crypto";
 import { program } from "commander";
 import ChromeExtension from "./index.ts";
 
-const pkg = JSON.parse(fs.readFileSync("../package.json", "utf8"));
+import packageJson from "../package.json" with { type: "json" };
 
 const cwd = process.cwd();
 
-program.version(pkg.version);
+program.version(packageJson.version);
 // coming soon
 // .option("-x, --xml", "output autoupdate xml instead of extension ")
 
