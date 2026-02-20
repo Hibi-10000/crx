@@ -19,33 +19,30 @@ interface BrowserManifest {
   version: string;
 }
 
-type BrowserExtensionOptions = object;
+type BrowserExtensionOptions = {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  [K in keyof Omit<ChromeExtension, "loaded"> as ChromeExtension[K] extends Function ? never : K]?: ChromeExtension[K];
+};
 
 class ChromeExtension {
-  appId: string | null;
+  appId?: string;
   rootDirectory: string;
-  //@ts-expect-error
-  publicKey: Buffer;
-  //@ts-expect-error
-  privateKey: Buffer;
-  codebase: string | null;
-  //@ts-expect-error
-  path: string;
+  publicKey?: Buffer;
+  privateKey?: Buffer;
+  codebase?: string;
+  path?: string;
   src: string;
   ignore: string[];
   version: number;
   loaded: boolean;
-  //@ts-expect-error
-  manifest: BrowserManifest;
+  manifest?: BrowserManifest;
 
   constructor(attrs: BrowserExtensionOptions) {
-    this.appId = null;
     this.rootDirectory = "";
-    this.codebase = null;
     this.src = "**";
     this.ignore = ["*.crx"];
     this.version = CrxVersion.VERSION_3;
-    // Setup defaults
+
     Object.assign(this, attrs);
     this.loaded = false;
   }
@@ -71,10 +68,10 @@ class ChromeExtension {
     this.publicKey = publicKey;
 
     if (this.version === 2) {
-      return crx2(this.privateKey, publicKey, contents);
+      return crx2(this.privateKey!, publicKey, contents);
     }
 
-    return crx3(this.privateKey, publicKey, contents);
+    return crx3(this.privateKey!, publicKey, contents);
   }
 
   /**
@@ -221,14 +218,14 @@ class ChromeExtension {
       throw new Error("No URL provided for update.xml.");
     }
 
-    const browserVersion = this.manifest.minimum_chrome_version
+    const browserVersion = this.manifest?.minimum_chrome_version
       || (this.version < 3 && "29.0.0") // Earliest version with extensions API
       || "64.0.3242"; // Chrome started generating CRX3 packages
 
     return Buffer.from(`<?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
   <app appid='${this.appId || this.generateAppId()}'>
-    <updatecheck codebase='${this.codebase}' version='${this.manifest.version}' prodversionmin='${browserVersion}' />
+    <updatecheck codebase='${this.codebase}' version='${this.manifest?.version}' prodversionmin='${browserVersion}' />
   </app>
 </gupdate>`);
   }

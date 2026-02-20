@@ -128,7 +128,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     const crxCustom = newCrx(opts);
     await crxCustom.load();
-    crxCustom.manifest.minimum_chrome_version = "99.99.99-crxtest";
+    crxCustom.manifest!.minimum_chrome_version = "99.99.99-crxtest";
     await crxCustom.pack();
     const xmlBufferCustom = crxCustom.generateUpdateXML();
 
