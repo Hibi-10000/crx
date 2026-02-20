@@ -38,6 +38,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   },
 
   load: async (t, opts) => {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     t.pass(/*JSON.stringify*/(await newCrx(opts).load()).toString());
 
     // Test relative path
@@ -74,6 +75,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     const crx = newCrx(opts);
 
     //@ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     t.throws(() => crx.writeFile("/tmp/crx"));
   },
 

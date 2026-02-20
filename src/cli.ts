@@ -129,9 +129,9 @@ async function pack(dir: string, opts: InterfaceCli) {
   });
 
   await fs.promises.readFile(keyPath)
-    .then(null, async (err) => {
+    .then(null, async (err: unknown) => {
       // If the key file doesn't exist, create one
-      if (err.code === "ENOENT") {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
         await generateKeyFile(keyPath, opts);
         process.stderr.write(`Created new private key at: ${keyPath}.\n`);
         return fs.readFileSync(keyPath);

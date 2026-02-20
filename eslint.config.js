@@ -43,8 +43,13 @@ export default defineConfig([
   },
   {
     files: ["**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+      },
+    },
     extends: [
-      tseslint.configs.strict,
+      tseslint.configs.strictTypeChecked,
       tseslint.configs.stylistic,
     ],
     rules: {
@@ -53,6 +58,8 @@ export default defineConfig([
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-confusing-void-expression": ["error", { ignoreVoidOperator: true }],
+      "@typescript-eslint/no-meaningless-void-operator": "off",
     },
   },
 ]);

@@ -79,7 +79,7 @@ class ChromeExtension {
 
     const manifestPath = join(this.path, "manifest.json");
 
-    this.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    this.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8")) as BrowserManifest;
     this.loaded = true;
 
     return this;
@@ -103,7 +103,7 @@ class ChromeExtension {
 
     return new Promise((resolve, reject) => {
       if (!privateKey) {
-        return reject(
+        return void reject(
           new Error("Impossible to generate a public key: privateKey option has not been defined or is empty."),
         );
       }
@@ -145,7 +145,7 @@ class ChromeExtension {
         resolve(contents);
       });
 
-      archive
+      void archive
         .glob(this.src, {
           cwd: this.path,
           matchBase: true,
@@ -219,7 +219,7 @@ class ChromeExtension {
     }
 
     const browserVersion = this.manifest!.minimum_chrome_version
-      || (this.version < 3 && "29.0.0") // Earliest version with extensions API
+      || (this.version < 3 ? "29.0.0" : undefined) // Earliest version with extensions API
       || "64.0.3242"; // Chrome started generating CRX3 packages
 
     return Buffer.from(`<?xml version='1.0' encoding='UTF-8'?>

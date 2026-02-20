@@ -8,7 +8,7 @@ const testWrap = (t: test.TestContext): Test => {
   return {
     throws: t.assert.throws,
     ok: t.assert.ok,
-    pass: (msg?: string) => t.assert.ok(true, msg),
+    pass: (msg?: string) => void t.assert.ok(true, msg),
     deepEqual: t.assert.deepEqual,
     equals: t.assert.equal,
     rejects: t.assert.rejects,
@@ -16,7 +16,7 @@ const testWrap = (t: test.TestContext): Test => {
 };
 
 for (const key of Object.keys(TEST_OPTIONS) as (keyof typeof TEST_OPTIONS)[]) {
-  test("crx", async (t) => {
+  void test("crx", async (t) => {
     for (const name in TESTS) {
       const test = TESTS[name];
       await t.test((key === "" ? "default" : key) + " - " + name, async (t) => {

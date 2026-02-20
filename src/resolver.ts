@@ -11,7 +11,7 @@ export default function resolve(pathOrFiles: string | string[]): Promise<PathMet
   return new Promise((resolve, reject) => {
     // legacy and original mode
     if (typeof pathOrFiles === "string") {
-      return resolve({
+      return void resolve({
         path: path.resolve(pathOrFiles),
         src: "**",
       });
@@ -29,14 +29,14 @@ export default function resolve(pathOrFiles: string | string[]): Promise<PathMet
       });
 
       if (!manifestFile) {
-        return reject(
+        return void reject(
           new Error("Unable to locate a manifest file in your list of files."),
         );
       }
 
       const manifestDir = path.dirname(manifestFile);
 
-      return resolve({
+      return void resolve({
         path: path.resolve(manifestDir),
         src: `{${
           pathOrFiles
@@ -50,7 +50,7 @@ export default function resolve(pathOrFiles: string | string[]): Promise<PathMet
 
     //
     else {
-      reject(
+      return void reject(
         new Error(
           "load path is none of a folder location nor a list of files to pack",
         ),
