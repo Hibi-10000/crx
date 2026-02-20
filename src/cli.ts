@@ -83,7 +83,7 @@ function generateKeyFile(keyPath: string, opts: InterfaceCli): Promise<void> {
 /**
  * Generates a Private Key
  */
-function keygen(dir: string, opts: InterfaceCli) {
+async function keygen(dir: string, opts: InterfaceCli) {
   dir = dir ? path.resolve(cwd, dir) : cwd;
 
   const keyPath = path.join(dir, "key.pem");
@@ -95,7 +95,7 @@ function keygen(dir: string, opts: InterfaceCli) {
     }
   }
   catch (_err) {
-    generateKeyFile(keyPath, opts);
+    await generateKeyFile(keyPath, opts);
   }
 }
 
