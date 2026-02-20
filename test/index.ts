@@ -121,6 +121,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     t.throws(() => new ChromeExtension({}).generateUpdateXML(), "No URL provided for update.xml");
 
     const crx = newCrx(opts);
+    t.throws(() => crx.generateUpdateXML());
     const expected = crx.version === 2 ? updateXml2 : updateXml3;
 
     await crx.pack();
