@@ -104,7 +104,7 @@ class ChromeExtension {
     return new Promise((resolve, reject) => {
       if (!privateKey) {
         return reject(
-          "Impossible to generate a public key: privateKey option has not been defined or is empty.",
+          new Error("Impossible to generate a public key: privateKey option has not been defined or is empty."),
         );
       }
 
