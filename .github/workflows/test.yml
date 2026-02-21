@@ -54,15 +54,16 @@ jobs:
         echo "$ROLLDOWNBINDING"
         pnpm add -D $ROLLDOWNBINDING
 
+    # NOTE: pnpm test always use node which defined on devEngines in package.json, so not apply matrix.node-version.
     - name: Run tests
       run: |
         tree node_modules/.pnpm/ | grep @rolldown+binding
-        pnpm test
+        pnpm run test
       continue-on-error: ${{ matrix.allow-failure || false }}
 
     - name: Run CLI commands
       run: |
-        pnpm build
+        pnpm run build
 
         node ./dist/index.js keygen ./test --force
         node ./dist/index.js pack ./test/myFirstExtension -p ./test/key.pem -o test.crx
