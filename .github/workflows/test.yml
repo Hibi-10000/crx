@@ -40,8 +40,24 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: "pnpm"
 
-    - name: Install dependencies and Run tests
-      run: pnpm install-test
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Override install rolldown in node 18
+      if: matrix.node-version == '18.x'
+      run: |
+        ROLLDOWNBINDING=@rolldown/binding-linux-x64-gnu@$( \
+          pnpm list @rolldown/binding-linux-x64-gnu --depth Infinity --parseable \
+          | grep @rolldown+binding-linux-x64-gnu \
+          | sed 's/.*[\\\/]@rolldown+binding-linux-x64-gnu@\(.*\)[\\\/]node_modules.*/\1/' \
+        )
+        echo "$ROLLDOWNBINDING"
+        pnpm add -D $ROLLDOWNBINDING
+
+    - name: Run tests
+      run: |
+        tree node_modules/.pnpm/ | grep @rolldown+binding
+        pnpm test
       continue-on-error: ${{ matrix.allow-failure || false }}
 
     - name: Run CLI commands
@@ -51,4 +67,3 @@ jobs:
         node ./dist/index.js keygen ./test --force
         node ./dist/index.js pack ./test/myFirstExtension -p ./test/key.pem -o test.crx
         node ./dist/index.js pack ./test/myFirstExtension --zip-output test.zip
-      continue-on-error: ${{ matrix.allow-failure || false }}
