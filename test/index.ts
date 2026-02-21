@@ -127,7 +127,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     await crx.pack();
     const xmlBuffer = crx.generateUpdateXML();
 
-    t.equals(xmlBuffer.toString(), expected.toString());
+    t.equals(xmlBuffer.toString(), expected.toString().replace(/\r\n/g, "\n"));
 
     const crxCustom = newCrx(opts);
     await crxCustom.load();
@@ -135,7 +135,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     await crxCustom.pack();
     const xmlBufferCustom = crxCustom.generateUpdateXML();
 
-    t.equals(xmlBufferCustom.toString(), updateXmlCustom.toString());
+    t.equals(xmlBufferCustom.toString(), updateXmlCustom.toString().replace(/\r\n/g, "\n"));
   },
 
   generatePublicKey: async (t, opts) => {
