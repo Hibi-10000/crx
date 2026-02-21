@@ -1,0 +1,41 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - fork/master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        lint: [lint, typecheck]
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ^10
+        run_install: false
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version-file: package.json
+        cache: "pnpm"
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Run ${{ matrix.lint }}
+      run: |
+        pnpm run ${{ matrix.lint }}
