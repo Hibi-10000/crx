@@ -6,12 +6,17 @@ on:
       - fork/master
   pull_request:
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
 
 jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
   test:
+    needs: [build]
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -43,28 +48,20 @@ jobs:
     - name: Install dependencies
       run: pnpm install
 
-    - name: Override install rolldown in node 18
-      if: matrix.node-version == '18.x'
-      run: |
-        ROLLDOWNBINDING=@rolldown/binding-linux-x64-gnu@$( \
-          pnpm list @rolldown/binding-linux-x64-gnu --depth Infinity --parseable \
-          | grep @rolldown+binding-linux-x64-gnu \
-          | sed 's/.*[\\\/]@rolldown+binding-linux-x64-gnu@\(.*\)[\\\/]node_modules.*/\1/' \
-        )
-        echo "$ROLLDOWNBINDING"
-        pnpm add -D $ROLLDOWNBINDING
-
     # NOTE: pnpm test always use node which defined on devEngines in package.json, so not apply matrix.node-version.
     - name: Run tests
       run: |
-        tree node_modules/.pnpm/ | grep @rolldown+binding
         pnpm run test
       continue-on-error: ${{ matrix.allow-failure || false }}
 
+    - name: Download build artifact
+      uses: actions/download-artifact@v6
+      with:
+        name: dist
+        path: ./dist
+
     - name: Run CLI commands
       run: |
-        pnpm run build
-
         node ./dist/index.js keygen ./test --force
         node ./dist/index.js pack ./test/myFirstExtension -p ./test/key.pem -o test.crx
         node ./dist/index.js pack ./test/myFirstExtension --zip-output test.zip
