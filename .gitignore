@@ -1,11 +1,14 @@
-test/*.crx
-test/*.zip
-test/*.xml
 dist
 node_modules
-coverage
-.nyc_output
 tmp
 
 build.crx
 update.xml
+
+# old
+coverage
+.nyc_output
+
+test/*.crx
+test/*.zip
+test/*.xml

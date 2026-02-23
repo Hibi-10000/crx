@@ -1,2 +1,22 @@
+.github
 test
+tmp
+
+.gitignore
+.npmignore
+eslint.config.js
+pnpm-workspace.yaml
+tsdown-typefix.d.ts
+tsdown.config.ts
+
+build.crx
+update.xml
+
+# old
+coverage
+.nyc_output
+
 .travis.yml
+test/*.crx
+test/*.zip
+test/*.xml
