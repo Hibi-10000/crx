@@ -1,13 +1,16 @@
 {
-  "author": "Jed Schmidt <tr@nslator.jp> (http://jed.is)",
-  "name": "crx",
+  "author": "Hibi_10000",
+  "name": "@hibi_10000/crx",
   "description": "crx is a utility to package Google Chrome extensions via a Node API and the command line",
   "version": "5.0.1",
   "license": "MIT",
-  "homepage": "https://github.com/oncletom/crx",
+  "contributors": [
+    "Jed Schmidt <tr@nslator.jp> (http://jed.is)"
+  ],
+  "homepage": "https://github.com/Hibi-10000/crx",
   "repository": {
     "type": "git",
-    "url": "git://github.com/oncletom/crx.git"
+    "url": "git://github.com/Hibi-10000/crx.git"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -23,7 +26,7 @@
     }
   },
   "bin": {
-    "crx": "./dist/cli.js"
+    "crx": "dist/cli.js"
   },
   "engines": {
     "node": ">=18.20"
