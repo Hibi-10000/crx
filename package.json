@@ -26,8 +26,7 @@
     "crx": "./dist/cli.js"
   },
   "engines": {
-    "node": ">=18.20",
-    "pnpm": ">=10.16"
+    "node": ">=18.20"
   },
   "scripts": {
     "build": "tsdown",
@@ -46,6 +45,11 @@
       "name": "node",
       "version": "^24.11",
       "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.16",
+      "onFail": "error"
     }
   },
   "devDependencies": {
