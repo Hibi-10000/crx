@@ -15,6 +15,8 @@ export interface Test {
   rejects: TestContextAssert["rejects"];
 }
 
+fs.mkdirSync("test/tmp", { recursive: true });
+
 const privateKey = fs.readFileSync(join(import.meta.dirname, "key.pem"));
 const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX2.xml"));
 const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
@@ -23,7 +25,7 @@ const updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations"
 function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0]): ChromeExtension {
   return new ChromeExtension({
     privateKey: privateKey,
-    path: "/tmp",
+    path: "test/tmp",
     codebase: "http://localhost:8000/myFirstExtension.crx",
     rootDirectory: join(import.meta.dirname, "myFirstExtension"),
     ...opts,
@@ -76,7 +78,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     //@ts-expect-error
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    t.throws(() => crx.writeFile("/tmp/crx"));
+    t.throws(() => crx.writeFile("test/tmp/crx"));
   },
 
   ignoreFiles: async (t, opts) => {
@@ -172,8 +174,8 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     const loadedCrx = await crx.load();
     const crxBuffer = await loadedCrx.pack();
-    await fs.promises.writeFile("build.crx", crxBuffer);
-    await fs.promises.writeFile("update.xml", loadedCrx.generateUpdateXML());
+    await fs.promises.writeFile("test/tmp/build.crx", crxBuffer);
+    await fs.promises.writeFile("test/tmp/update.xml", loadedCrx.generateUpdateXML());
   },
 };
 
