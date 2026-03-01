@@ -9,7 +9,7 @@ import * as crx from "./crx3.pb.js";
  *
  * Based on `crx_creator` from Chromium project.
  *
- * @see {@link https://github.com/chromium/chromium/blob/master/components/crx_file/crx_creator.cc}
+ * @see {@link https://github.com/chromium/chromium/blob/e4a3bada6aab7aed90460ec7d27f8c7167c5666e/components/crx_file/crx_creator.cc}
  */
 export default function generatePackage(privateKey: crypto.KeyLike, publicKey: Buffer, contents: Buffer): Buffer {
   let pb: PBf;

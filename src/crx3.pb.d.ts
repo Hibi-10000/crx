@@ -3,6 +3,7 @@ import type Pbf from "pbf";
 interface CrxFileHeader {
   sha256_with_rsa?: AsymmetricKeyProof[];
   sha256_with_ecdsa?: AsymmetricKeyProof[];
+  verified_contents?: Uint8Array;
   signed_header_data?: Uint8Array;
 }
 export function readCrxFileHeader(pbf: Pbf, end?: number): CrxFileHeader;
