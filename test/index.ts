@@ -35,7 +35,7 @@ function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0]): Chrome
 export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void | Promise<void>> = {
   ChromeExtension: (t, opts) => {
     //@ts-expect-error
-    t.throws(() => ChromeExtension({}));
+    t.throws(() => ChromeExtension({ ...opts }));
     t.ok(newCrx(opts));
   },
 
@@ -44,10 +44,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     t.pass(JSON.stringify(newCrx(opts).load(), (key, value) => key === "data" ? "[Array]" : value));
 
     // Test relative path
-    t.ok(newCrx().load("./test/myFirstExtension"));
+    t.ok(newCrx(opts).load("./test/myFirstExtension"));
 
     // Test absolute path
-    t.ok(newCrx().load(join(import.meta.dirname, "myFirstExtension")));
+    t.ok(newCrx(opts).load(join(import.meta.dirname, "myFirstExtension")));
 
     // Test list of files
     const fileList = [
@@ -120,7 +120,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   },
 
   generateUpdateXML: async (t, opts) => {
-    t.throws(() => new ChromeExtension({}).generateUpdateXML(), /No URL provided for update.xml/);
+    t.throws(() => new ChromeExtension({ ...opts }).generateUpdateXML(), /No URL provided for update.xml/);
 
     const crx = newCrx(opts);
     t.throws(() => crx.generateUpdateXML(), /crx.load needs to be called first in order to generate update.xml./);
