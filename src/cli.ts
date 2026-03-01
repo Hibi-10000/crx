@@ -142,7 +142,7 @@ async function pack(dir: string, opts: InterfaceCli) {
     })
     .then(async (key) => {
       crx.privateKey = key;
-      await crx.load();
+      crx.load();
       const fileBuffer = await crx.loadContents();
       if (opts.zipOutput) {
         const outFile = path.resolve(cwd, opts.zipOutput);

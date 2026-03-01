@@ -1,5 +1,9 @@
 # Change Log
 
+### Unreleased
+- refactor!: Remove unnecessary async/await in ChromeExtension class
+- chore(deps): update dependencies
+
 ### 5.1.0 (2026/03/01 09:55 +09:00)
 - Migrate ESM (still support CommonJS require)
 - Use Typescript with tsdown

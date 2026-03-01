@@ -54,10 +54,11 @@ class ChromeExtension {
    */
   async pack(contentsBuffer?: Buffer): Promise<Buffer> {
     if (!this.loaded) {
-      return this.load().then(this.pack.bind(this, contentsBuffer));
+      this.load();
+      return this.pack(contentsBuffer);
     }
 
-    const publicKey = await this.generatePublicKey();
+    const publicKey = this.generatePublicKey();
     const contents = contentsBuffer ?? await this.loadContents();
 
     this.publicKey = publicKey;
@@ -72,8 +73,7 @@ class ChromeExtension {
   /**
    * Loads extension manifest and copies its content to a workable path.
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async load(path: string | string[] = this.rootDirectory): Promise<ChromeExtension> {
+  load(path: string | string[] = this.rootDirectory): this {
     const metadata = resolve(path);
     this.path = metadata.path;
     this.src = metadata.src;
@@ -99,8 +99,7 @@ class ChromeExtension {
    *   // do something with publicKey
    * });
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async generatePublicKey(): Promise<Buffer> {
+  generatePublicKey(): Buffer {
     const privateKey = this.privateKey;
 
     if (!privateKey) {

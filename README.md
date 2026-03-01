@@ -34,7 +34,7 @@ const crx = new ChromeExtension({
 });
 
 crx.load(path.resolve(import.meta.dirname, './myExtension'))
-  .then(crx => crx.pack())
+crx.pack()
   .then(crxBuffer => {
     const updateXML = crx.generateUpdateXML()
 
@@ -69,17 +69,15 @@ crx = new ChromeExtension({
 Prepares the temporary workspace for the Chrome Extension located at `path` — which is expected to directly contain `manifest.json`.
 
 ```js
-crx.load('/path/to/extension').then(crx => {
-  // ...
-});
+crx.load('/path/to/extension');
+// ...
 ```
 
 Alternatively, you can pass a list of files — the first `manifest.json` file to be found will be considered as the root of the application.
 
 ```js
-crx.load(['/my/extension/manifest.json', '/my/extension/background.json']).then(crx => {
-  // ...
-});
+crx.load(['/my/extension/manifest.json', '/my/extension/background.json']);
+// ...
 ```
 
 ### crx.pack()
@@ -87,8 +85,8 @@ crx.load(['/my/extension/manifest.json', '/my/extension/background.json']).then(
 Packs the Chrome Extension and resolves the promise with a Buffer containing the `.crx` file.
 
 ```js
-crx.load('/path/to/extension')
-  .then(crx => crx.pack())
+crx.load('/path/to/extension');
+crx.pack()
   .then(crxBuffer => {
     fs.writeFileSync('/tmp/foobar.crx', crxBuffer);
   });
@@ -101,8 +99,8 @@ Returns a Buffer containing the update.xml file used for `autoupdate`, as specif
 ```js
 const crx = new ChromeExtension({ ..., codebase: 'https://autoupdateserver.com/myFirstExtension.crx' });
 
-crx.load('/path/to/extension')
-  .then(crx => crx.pack())
+crx.load('/path/to/extension');
+crx.pack()
   .then(crxBuffer => {
     // ...
     const xmlBuffer = crx.generateUpdateXML();

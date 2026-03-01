@@ -39,15 +39,15 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     t.ok(newCrx(opts));
   },
 
-  load: async (t, opts) => {
+  load: (t, opts) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    t.pass(JSON.stringify(await newCrx(opts).load(), (key, value) => key === "data" ? "[Array]" : value));
+    t.pass(JSON.stringify(newCrx(opts).load(), (key, value) => key === "data" ? "[Array]" : value));
 
     // Test relative path
-    t.ok(await newCrx().load("./test/myFirstExtension"));
+    t.ok(newCrx().load("./test/myFirstExtension"));
 
     // Test absolute path
-    t.ok(await newCrx().load(join(import.meta.dirname, "myFirstExtension")));
+    t.ok(newCrx().load(join(import.meta.dirname, "myFirstExtension")));
 
     // Test list of files
     const fileList = [
@@ -55,16 +55,16 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    t.ok(await newCrx(opts).load(fileList));
+    t.ok(newCrx(opts).load(fileList));
 
     const fileList2 = [
       "test/myFirstExtension/icon.png",
     ];
 
-    await t.rejects(async () => await newCrx(opts).load(fileList2));
+    t.throws(() => newCrx(opts).load(fileList2));
 
     //@ts-expect-error
-    await t.rejects(async () => await newCrx(opts).load(Buffer.from("")));
+    t.throws(() => newCrx(opts).load(Buffer.from("")));
   },
 
   pack: async (t, opts) => {
@@ -87,7 +87,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       ...opts,
     });
 
-    await crx.load();
+    crx.load();
     const packageData = await crx.loadContents();
     const entries = new Zip(packageData)
       .getEntries()
@@ -103,7 +103,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
 
     const crx = newCrx(opts);
 
-    await crx.load();
+    crx.load();
     const contentsBuffer = await crx.loadContents();
     t.ok(contentsBuffer instanceof Buffer);
     const packageData = contentsBuffer;
@@ -132,7 +132,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     t.equals(xmlBuffer.toString(), expected.toString().replace(/\r\n/g, "\n"));
 
     const crxCustom = newCrx(opts);
-    await crxCustom.load();
+    crxCustom.load();
     crxCustom.manifest!.minimum_chrome_version = "99.99.99-crxtest";
     await crxCustom.pack();
     const xmlBufferCustom = crxCustom.generateUpdateXML();
@@ -140,18 +140,18 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     t.equals(xmlBufferCustom.toString(), updateXmlCustom.toString().replace(/\r\n/g, "\n"));
   },
 
-  generatePublicKey: async (t, opts) => {
+  generatePublicKey: (t, opts) => {
     const crx = newCrx(opts);
     //@ts-expect-error
     crx.privateKey = null;
 
-    await t.rejects(async () => await crx.generatePublicKey());
+    t.throws(() => crx.generatePublicKey());
 
-    const publicKey = await newCrx(opts).generatePublicKey();
+    const publicKey = newCrx(opts).generatePublicKey();
     t.equals(publicKey.length, 162);
   },
 
-  generateAppId: async (t, opts) => {
+  generateAppId: (t, opts) => {
     t.throws(() => {
       newCrx(opts).generateAppId();
     }, /Public key is neither set, nor given/);
@@ -159,7 +159,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     const crx = newCrx(opts);
 
     // from Public Key
-    const publicKey = await crx.generatePublicKey();
+    const publicKey = crx.generatePublicKey();
     t.equals(crx.generateAppId(publicKey), "eoilidhiokfphdhpmhoaengdkehanjif");
 
     // from Linux Path
@@ -172,7 +172,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   "end to end": async (t, opts) => {
     const crx = newCrx(opts);
 
-    const loadedCrx = await crx.load();
+    const loadedCrx = crx.load();
     const crxBuffer = await loadedCrx.pack();
     await fs.promises.writeFile("test/tmp/build.crx", crxBuffer);
     await fs.promises.writeFile("test/tmp/update.xml", loadedCrx.generateUpdateXML());
