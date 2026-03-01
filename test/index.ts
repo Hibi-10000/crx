@@ -61,10 +61,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    t.throws(() => newCrx(opts).load(fileList2));
+    t.throws(() => newCrx(opts).load(fileList2), /Unable to locate a manifest file in your list of files./);
 
     //@ts-expect-error
-    t.throws(() => newCrx(opts).load(Buffer.from("")));
+    t.throws(() => newCrx(opts).load(Buffer.from("")), /load path is none of a folder location nor a list of files to pack/);
   },
 
   pack: async (t, opts) => {
@@ -120,10 +120,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
   },
 
   generateUpdateXML: async (t, opts) => {
-    t.throws(() => new ChromeExtension({}).generateUpdateXML(), "No URL provided for update.xml");
+    t.throws(() => new ChromeExtension({}).generateUpdateXML(), /No URL provided for update.xml/);
 
     const crx = newCrx(opts);
-    t.throws(() => crx.generateUpdateXML());
+    t.throws(() => crx.generateUpdateXML(), /crx.load needs to be called first in order to generate update.xml./);
     const expected = crx.version === 2 ? updateXml2 : updateXml3;
 
     await crx.pack();
@@ -145,7 +145,7 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     //@ts-expect-error
     crx.privateKey = null;
 
-    t.throws(() => crx.generatePublicKey());
+    t.throws(() => crx.generatePublicKey(), /Impossible to generate a public key: privateKey option has not been defined or is empty./);
 
     const publicKey = newCrx(opts).generatePublicKey();
     t.equals(publicKey.length, 162);
