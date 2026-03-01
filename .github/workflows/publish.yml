@@ -62,9 +62,9 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: dist
+          name: dist-publish
           path: dist
 
       - name: Publish package
         run: |
-          npm publish --access public
+          npm publish
