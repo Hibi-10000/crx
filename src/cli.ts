@@ -125,7 +125,7 @@ async function pack(dir: string, opts: InterfaceCli) {
   const crx = new ChromeExtension({
     rootDirectory: input,
     //maxBuffer: opts.maxBuffer,
-    version: opts.crxVersion || 3,
+    version: opts.crxVersion ?? 3,
   });
 
   await fs.promises.readFile(keyPath)

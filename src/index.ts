@@ -58,7 +58,7 @@ class ChromeExtension {
     }
 
     const publicKey = await this.generatePublicKey();
-    const contents = contentsBuffer || await this.loadContents();
+    const contents = contentsBuffer ?? await this.loadContents();
 
     this.publicKey = publicKey;
 
@@ -73,8 +73,8 @@ class ChromeExtension {
    * Loads extension manifest and copies its content to a workable path.
    */
   // eslint-disable-next-line @typescript-eslint/require-await
-  async load(path?: string | string[]): Promise<ChromeExtension> {
-    const metadata = resolve(path || this.rootDirectory);
+  async load(path: string | string[] = this.rootDirectory): Promise<ChromeExtension> {
+    const metadata = resolve(path);
     this.path = metadata.path;
     this.src = metadata.src;
 
@@ -162,9 +162,7 @@ class ChromeExtension {
    *
    * @param keyOrPath the public key to use to generate the app ID
    */
-  generateAppId(keyOrPath?: Buffer | string): string {
-    keyOrPath = keyOrPath || this.publicKey;
-
+  generateAppId(keyOrPath: Buffer | string | undefined = this.publicKey): string {
     if (typeof keyOrPath !== "string" && !(keyOrPath instanceof Buffer)) {
       throw new Error("Public key is neither set, nor given");
     }
@@ -217,12 +215,12 @@ class ChromeExtension {
     }
 
     const browserVersion = this.manifest!.minimum_chrome_version
-      || (this.version < 3 ? "29.0.0" : undefined) // Earliest version with extensions API
-      || "64.0.3242"; // Chrome started generating CRX3 packages
+      ?? (this.version < 3 ? "29.0.0" : undefined) // Earliest version with extensions API
+      ?? "64.0.3242"; // Chrome started generating CRX3 packages
 
     return Buffer.from(`<?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-  <app appid='${this.appId || this.generateAppId()}'>
+  <app appid='${this.appId ?? this.generateAppId()}'>
     <updatecheck codebase='${this.codebase}' version='${this.manifest!.version}' prodversionmin='${browserVersion}' />
   </app>
 </gupdate>`);
