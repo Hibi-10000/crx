@@ -1,19 +1,21 @@
-# crx [![Build Status](https://secure.travis-ci.org/oncletom/crx.svg)](http://travis-ci.org/oncletom/crx) [![Build status](https://ci.appveyor.com/api/projects/status/i8v95qmgwwxic5wn?svg=true)](https://ci.appveyor.com/project/oncletom/crx)
+# crx [![Test status](https://github.com/Hibi-10000/crx/actions/workflows/test.yml/badge.svg)](https://github.com/Hibi-10000/crx/actions/workflows/test.yml) [![Lint status](https://github.com/Hibi-10000/crx/actions/workflows/lint.yml/badge.svg)](https://github.com/Hibi-10000/crx/actions/workflows/lint.yml) [![Publish status](https://github.com/Hibi-10000/crx/actions/workflows/publish.yml/badge.svg)](https://github.com/Hibi-10000/crx/actions/workflows/publish.yml)
 
 > crx is a utility to **package Google Chrome extensions** via a *Node API* and the *command line*. It is written **purely in JavaScript** and **does not require OpenSSL**!
 
+<!--
 Packages are available to use `crx` with:
 
 - *grunt*: [grunt-crx](https://npmjs.com/grunt-crx)
 - *gulp*: [gulp-crx-pack](https://npmjs.com/gulp-crx-pack)
 - *webpack*: [crx-webpack-plugin](https://npmjs.com/crx-webpack-plugin)
+-->
 
-**Compatibility**: this extension is compatible with `node>=10`.
+**Compatibility**: this extension is compatible with `node` `^18.20 || >=20.10`.
 
 ## Install
 
 ```bash
-$ npm install crx
+$ npm install @hibi_10000/crx
 ```
 
 ## Module API
@@ -24,7 +26,7 @@ Asynchronous functions returns a native ECMAScript Promise.
 import fs from 'fs';
 import path from 'path';
 
-import ChromeExtension from 'crx';
+import ChromeExtension from '@hibi_10000/crx';
 
 const crx = new ChromeExtension({
   codebase: 'http://localhost:8000/myExtension.crx',
@@ -44,7 +46,7 @@ crx.load(path.resolve(import.meta.dirname, './myExtension'))
   });
 ```
 
-### ChromeExtension = require("crx")
+### ChromeExtension = require("@hibi_10000/crx")
 ### crx = new ChromeExtension(attrs?)
 
 This module exports the `ChromeExtension` constructor directly, which can take an optional attribute object, which is used to extend the instance.
@@ -199,7 +201,3 @@ $ crx pack myFirstExtension -p myPrivateKey.pem -o
 ```
 
 to sign your package without keeping the key in the directory.
-
-# License
-
-[MIT License](LICENSE).
