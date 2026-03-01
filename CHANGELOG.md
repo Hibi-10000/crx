@@ -1,4 +1,13 @@
-## Change Log
+# Change Log
+
+### 5.1.0 (2026/03/01 09:55 +09:00)
+- Migrate ESM (still support CommonJS require)
+- Use Typescript with tsdown
+- Drop support for Node.js v10 to v17 and v19
+- Replace node-rsa with node:crypto module
+- Update dependencies
+
+## Original Changelog from Forked
 
 ### 5.0.1 (2019/07/22 09:57 +00:00)
 - [#107](https://github.com/oncletom/crx/pull/107) fix: loading relative path (@ahwayakchih)
