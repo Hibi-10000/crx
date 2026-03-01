@@ -124,52 +124,49 @@ async function pack(dir: string, opts: InterfaceCli) {
 
   const crx = new ChromeExtension({
     rootDirectory: input,
+    privateKey: await fs.promises.readFile(keyPath)
+      .then(null, async (err: unknown) => {
+        // If the key file doesn't exist, create one
+        if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+          await generateKeyFile(keyPath, opts);
+          process.stderr.write(`Created new private key at: ${keyPath}.\n`);
+          return fs.readFileSync(keyPath);
+        }
+        else {
+          throw err;
+        }
+      }),
     //maxBuffer: opts.maxBuffer,
     version: opts.crxVersion ?? 3,
   });
 
-  await fs.promises.readFile(keyPath)
-    .then(null, async (err: unknown) => {
-      // If the key file doesn't exist, create one
-      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-        await generateKeyFile(keyPath, opts);
-        process.stderr.write(`Created new private key at: ${keyPath}.\n`);
-        return fs.readFileSync(keyPath);
-      }
-      else {
-        throw err;
-      }
-    })
-    .then(async (key) => {
-      crx.privateKey = key;
-      crx.load();
-      const fileBuffer = await crx.loadContents();
-      if (opts.zipOutput) {
-        const outFile = path.resolve(cwd, opts.zipOutput);
+  crx.load();
+  const fileBuffer = await crx.loadContents();
+  if (opts.zipOutput) {
+    const outFile = path.resolve(cwd, opts.zipOutput);
 
-        fs.createWriteStream(outFile).end(fileBuffer);
-      }
-      else {
-        const crxBuffer = await crx.pack(fileBuffer);
-        if (opts.zipOutput) {
-          return;
-        }
-        else if (opts.output) {
-          output = opts.output;
-        }
-        else {
-          output = `${path.basename(cwd)}.crx`;
-        }
+    fs.createWriteStream(outFile).end(fileBuffer);
+  }
+  else {
+    const crxBuffer = await crx.pack(fileBuffer);
+    if (opts.zipOutput) {
+      return;
+    }
+    else if (opts.output) {
+      output = opts.output;
+    }
+    else {
+      output = `${path.basename(cwd)}.crx`;
+    }
 
-        const outFile = path.resolve(cwd, output);
-        if (outFile) {
-          fs.createWriteStream(outFile).end(crxBuffer);
-        }
-        else {
-          process.stdout.end(crxBuffer);
-        }
-      }
-    });
+    const outFile = path.resolve(cwd, output);
+    if (outFile) {
+      fs.createWriteStream(outFile).end(crxBuffer);
+    }
+    else {
+      process.stdout.end(crxBuffer);
+    }
+  }
 }
 
 export default program;
