@@ -39,12 +39,14 @@ export default function generatePackage(privateKey: crypto.KeyLike, publicKey: B
 
   const result = Buffer.allocUnsafe(size);
 
+  /* eslint-disable no-useless-assignment */
   let index = 0;
   kSignature.copy(result, index);
   kVersion.copy(result, index += kSignature.length);
   result.writeUInt32LE(header.length, index += kVersion.length);
   header.copy(result, index += SIZE_BYTES);
   contents.copy(result, index += header.length);
+  /* eslint-enable no-useless-assignment */
 
   return result;
 };
