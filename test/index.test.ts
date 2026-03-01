@@ -8,7 +8,7 @@ const testWrap = (t: test.TestContext): Test => {
   return {
     throws: t.assert.throws,
     ok: t.assert.ok,
-    pass: (msg?: string) => void t.assert.ok(true, msg),
+    pass: (msg?: string) => void (msg && t.diagnostic(msg)),
     deepEqual: t.assert.deepEqual,
     equals: t.assert.equal,
     rejects: t.assert.rejects,
