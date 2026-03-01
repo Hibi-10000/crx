@@ -22,14 +22,14 @@ const updateXml2 = fs.readFileSync(join(import.meta.dirname, "expectations", "up
 const updateXml3 = fs.readFileSync(join(import.meta.dirname, "expectations", "updateCRX3.xml"));
 const updateXmlCustom = fs.readFileSync(join(import.meta.dirname, "expectations", "updateProdVersionMin.xml"));
 
-function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0]): ChromeExtension {
+function newCrx(opts?: ConstructorParameters<typeof ChromeExtension>[0], path?: ConstructorParameters<typeof ChromeExtension>[1]): ChromeExtension {
   return new ChromeExtension({
     privateKey: privateKey,
     path: "test/tmp",
     codebase: "http://localhost:8000/myFirstExtension.crx",
     rootDirectory: join(import.meta.dirname, "myFirstExtension"),
     ...opts,
-  });
+  }, path);
 }
 
 export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefined) => void | Promise<void>> = {
@@ -44,10 +44,10 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
     t.pass(JSON.stringify(newCrx(opts).load(), (key, value) => key === "data" ? "[Array]" : value));
 
     // Test relative path
-    t.ok(newCrx(opts).load("./test/myFirstExtension"));
+    t.ok(newCrx(opts, "./test/myFirstExtension").load());
 
     // Test absolute path
-    t.ok(newCrx(opts).load(join(import.meta.dirname, "myFirstExtension")));
+    t.ok(newCrx(opts, join(import.meta.dirname, "myFirstExtension")).load());
 
     // Test list of files
     const fileList = [
@@ -55,16 +55,16 @@ export const TESTS: Record<string, (t: Test, opts: { version: 2 | 3 } | undefine
       "test/myFirstExtension/icon.png",
     ];
 
-    t.ok(newCrx(opts).load(fileList));
+    t.ok(newCrx(opts, fileList).load());
 
     const fileList2 = [
       "test/myFirstExtension/icon.png",
     ];
 
-    t.throws(() => newCrx(opts).load(fileList2), /Unable to locate a manifest file in your list of files./);
+    t.throws(() => newCrx(opts, fileList2).load(), /Unable to locate a manifest file in your list of files./);
 
     //@ts-expect-error
-    t.throws(() => newCrx(opts).load(Buffer.from("")), /load path is none of a folder location nor a list of files to pack/);
+    t.throws(() => newCrx(opts, Buffer.from("")).load(), /load path is none of a folder location nor a list of files to pack/);
   },
 
   pack: async (t, opts) => {

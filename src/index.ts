@@ -30,16 +30,20 @@ class ChromeExtension {
   publicKey?: Buffer;
   privateKey?: crypto.KeyLike;
   codebase?: string;
-  path?: string;
+  path: string;
   src: string = "**";
   ignore: string[] = ["*.crx"];
   version: number = CrxVersion.VERSION_3;
   loaded: boolean;
   manifest?: BrowserManifest;
 
-  constructor(attrs: BrowserExtensionOptions) {
+  constructor(attrs: BrowserExtensionOptions, path?: string | string[]) {
     Object.assign(this, attrs);
     this.loaded = false;
+
+    const metadata = resolve(path ?? this.rootDirectory);
+    this.path = metadata.path;
+    this.src = metadata.src;
   }
 
   /**
@@ -73,11 +77,7 @@ class ChromeExtension {
   /**
    * Loads extension manifest and copies its content to a workable path.
    */
-  load(path: string | string[] = this.rootDirectory): this {
-    const metadata = resolve(path);
-    this.path = metadata.path;
-    this.src = metadata.src;
-
+  load(): this {
     const manifestPath = join(this.path, "manifest.json");
 
     this.manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8")) as BrowserManifest;
