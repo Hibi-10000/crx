@@ -31,16 +31,16 @@ jobs:
             allow-failure: true
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
       with:
         version: ^11
         run_install: false
 
     - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
         cache: "pnpm"
@@ -55,7 +55,7 @@ jobs:
       continue-on-error: ${{ matrix.allow-failure || false }}
 
     - name: Download build artifact
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v8
       with:
         name: dist
         path: ./dist
