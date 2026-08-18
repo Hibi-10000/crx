@@ -14,7 +14,7 @@ export default defineConfig({
     oxc: true,
   },
   deps: {
-    skipNodeModulesBundle: true,
+    neverBundle: true,
   },
   platform: "node",
   report: {
