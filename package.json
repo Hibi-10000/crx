@@ -60,11 +60,12 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/archiver": "^8.0.0",
     "@types/node": "^24.13.3",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "adm-zip": "^0.6.0",
     "eslint": "^10.8.1",
     "globals": "^17.9.0",
     "tsdown": "^0.22.14",
-    "typescript": "^5.9.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.67.0"
   }
 }
