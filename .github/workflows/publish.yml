@@ -51,9 +51,9 @@ jobs:
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Run pnpm install
+      - name: Install dependencies
         run: |
-          pnpm install
+          pnpm ci
 
       - name: Run build
         run: |

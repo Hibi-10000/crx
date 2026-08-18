@@ -46,7 +46,7 @@ jobs:
         cache: "pnpm"
 
     - name: Install dependencies
-      run: pnpm install
+      run: pnpm ci
 
     # NOTE: pnpm test always use node which defined on devEngines in package.json, so not apply matrix.node-version.
     - name: Run tests
