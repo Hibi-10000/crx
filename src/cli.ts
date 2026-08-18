@@ -5,7 +5,7 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 
 import { program } from "commander";
-import ChromeExtension from "./index.ts";
+import ChromeExtension, { type CrxVersion } from "./index.ts";
 
 import packageJson from "../package.json" with { type: "json" };
 
@@ -16,12 +16,20 @@ program.version(packageJson.version);
 // .option("-x, --xml", "output autoupdate xml instead of extension ")
 
 interface InterfaceCli {
-  crxVersion?: number;
+  crxVersion?: CrxVersion;
   force: boolean;
   privateKey: string;
   output?: string;
   zipOutput?: string;
   //maxBuffer?: number;
+}
+
+function parseCrxVersion(value: string): CrxVersion {
+  const version = parseInt(value, 10);
+  if (version !== 2 && version !== 3) {
+    throw new Error(`Invalid CRX version: ${value}. Must be either 2 or 3.`);
+  }
+  return version;
 }
 
 program
@@ -30,7 +38,7 @@ program
   .option(
     "-c, --crx-version [number]",
     "CRX format version, can be either 2 or 3, defaults to 3",
-    parseInt,
+    parseCrxVersion,
   )
   .description("generate a private key in [directory]/key.pem")
   .action(keygen);
@@ -53,7 +61,7 @@ program
   .option(
     "-c, --crx-version [number]",
     "CRX format version, can be either 2 or 3, defaults to 3",
-    parseInt,
+    parseCrxVersion,
   )
   .action(pack);
 

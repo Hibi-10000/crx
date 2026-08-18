@@ -8,7 +8,8 @@ import resolve from "./resolver.ts";
 import crx2 from "./crx2.ts";
 import crx3 from "./crx3.ts";
 
-/** @enum {number} CrxVersion */
+export type CrxVersion = typeof CrxVersion[keyof typeof CrxVersion];
+
 export const CrxVersion = {
   VERSION_2: 2,
   VERSION_3: 3,
@@ -33,7 +34,7 @@ class ChromeExtension {
   path: string;
   src: string = "**";
   ignore: string[] = ["*.crx"];
-  version: number = CrxVersion.VERSION_3;
+  version: CrxVersion = CrxVersion.VERSION_3;
   loaded: boolean;
   manifest?: BrowserManifest;
 
