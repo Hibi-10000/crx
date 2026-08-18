@@ -39,16 +39,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+      - name: Setup pnpm and Node.js
+        uses: pnpm/setup@v2
         with:
           version: ^11
+          install: false
+          cache: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version-file: "package.json"
-          cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
