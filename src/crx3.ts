@@ -1,7 +1,7 @@
 "use strict";
 
 import crypto from "node:crypto";
-import PBf from "pbf";
+import { PbfWriter } from "pbf";
 import * as crx from "./crx3.pb.js";
 
 /**
@@ -12,15 +12,15 @@ import * as crx from "./crx3.pb.js";
  * @see {@link https://github.com/chromium/chromium/blob/e4a3bada6aab7aed90460ec7d27f8c7167c5666e/components/crx_file/crx_creator.cc}
  */
 export default function generatePackage(privateKey: crypto.KeyLike, publicKey: Buffer, contents: Buffer): Buffer {
-  let pb: PBf;
+  let pb: PbfWriter;
 
-  pb = new PBf();
+  pb = new PbfWriter();
   crx.writeSignedData({
     crx_id: getCrxId(publicKey),
   }, pb);
   const signedHeaderData = pb.finish();
 
-  pb = new PBf();
+  pb = new PbfWriter();
   crx.writeCrxFileHeader({
     sha256_with_rsa: [{
       public_key: publicKey,

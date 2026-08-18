@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import { join } from "node:path";
 import crypto from "node:crypto";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 import resolve from "./resolver.ts";
 import crx2 from "./crx2.ts";
 import crx3 from "./crx3.ts";
@@ -116,7 +116,7 @@ class ChromeExtension {
    */
   loadContents(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      const archive = archiver("zip", { zlib: { level: 9 } });
+      const archive = new ZipArchive({ zlib: { level: 9 } });
       let contents = Buffer.from("");
 
       if (!this.loaded) {

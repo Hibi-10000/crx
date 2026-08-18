@@ -13,7 +13,9 @@ export default defineConfig({
   dts: {
     oxc: true,
   },
-  skipNodeModulesBundle: true,
+  deps: {
+    skipNodeModulesBundle: true,
+  },
   platform: "node",
   report: {
     gzip: false,
