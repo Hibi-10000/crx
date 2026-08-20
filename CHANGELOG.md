@@ -1,7 +1,11 @@
 # Change Log
 
 ### Unreleased
+
+### 5.2.0 (2026/08/20 22:52 +09:00)
 - refactor!: Remove unnecessary async/await in ChromeExtension class
+- refactor!: Changed behavior when passing falsy values ​​other than false
+- fix: An error will now occur if you pass a value other than `2` or `3` to `--crx-version` in the CLI.
 - chore(deps): update dependencies
 
 ### 5.1.0 (2026/03/01 09:55 +09:00)
